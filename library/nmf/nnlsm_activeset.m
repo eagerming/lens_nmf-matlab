@@ -31,7 +31,7 @@
 %        success : 0 for success, 1 for failure.
 %                  Failure could only happen on a numericall very ill-conditioned problem.
 
-function [ X,Y,success,numChol,numEq ] = nnlsm_activeset( A, B, overwrite, isInputProd, init)
+function [ X,Y,success,numChol,numEq ] = nnlsm_activeset(A, B, overwrite, isInputProd, init)
     if nargin<3, overwrite=0;, end
     if nargin<4, isInputProd=0;, end
     

@@ -37,7 +37,7 @@
 %
 % [Ws, Hs, Drs, Dcs, As] = lens_nmf(A, k, topk, iter); 
 
-function [Ws, Hs, Drs, Dcs, As] = lens_nmf(A, k, topk, total)
+function [Ws, Hs, Drs, Dcs, As] = lens_nmf_1and2d(A, k, topk, total, isWithSample, alpha)
 
 
     % apply l2-normalization and get row-wise and column-wise cosine similarity values 
@@ -69,44 +69,67 @@ function [Ws, Hs, Drs, Dcs, As] = lens_nmf(A, k, topk, total)
     params_r2.anls_alg = anls_alg;
     params_r2.tol = tol;
     params_r2.maxiter = maxiter;
+    params_r2.alpha = alpha;
+    
+    Drs = []; Dcs = [];
 
+    figure
+    imagesc(A);
+    hold off
+    unexplained = sum(sum(A))
 %%
     for iter=1:(total) % loop for given number of iterations
         
-        if iter == 1 
-            
-            row_idx = datasample(1:size(A,1),1,'Replace',false);
-            
-        else
-
-            % sample with weight to get one row index
-            row_idx = datasample(1:size(A,1),1,'Replace',false,'Weights', sum(cell2mat(Ws'),2));
-    
-        end            
         
-        % get one column index
-        col_idx = datasample(1:size(A,2),1,'Replace',false,'Weights', full(sum(abs(Rs{iter}))));
 
-        % update Drs, Dcs with cosine similarity
-        [Drs{iter}, Dcs{iter}] = getWeight(Rs{iter},A_cossim_row,A_cossim_col,row_idx,col_idx);
+        if isWithSample
+            if iter == 1   
+                row_idx = datasample(1:size(A,1),1,'Replace',false);
+            else
+                % sample with weight to get one row index
+                row_idx = datasample(1:size(A,1),1,'Replace',false,'Weights', sum(cell2mat(Ws'),2));
+            end            
+            % get one column index
+            col_idx = datasample(1:size(A,2),1,'Replace',false,'Weights', full(sum(abs(Rs{iter}))));
+            
+            % update Drs, Dcs with cosine similarity
+            [Drs{iter}, Dcs{iter}] = getWeight(Rs{iter},A_cossim_row,A_cossim_col,row_idx,col_idx);
+            % update A matrix using Drs,Dcs
+            As = update(Rs{iter}, Drs{iter}, Dcs{iter}); 
+        else
+            As = Rs{iter};
+        end
 
-        % update A matrix using Drs,Dcs
-        As = update(Rs{iter}, Drs{iter}, Dcs{iter}); 
+        
+        if k == 2
+            Winit = rand(size(As,1),2);Winit(Winit<0) = 0;
+            Hinit = rand(2,size(As,2));Hinit(Hinit<0) = 0;
+            [Ws{iter}, Hs{iter}] = nmfsh_comb_rank2(As, Winit, Hinit,params_r2);
+        elseif k == 1
+            Winit = rand(size(As,1),1);Winit(Winit<0) = 0;
+            Hinit = rand(1,size(As,2));Hinit(Hinit<0) = 0;
+            [Ws{iter}, Hs{iter}] = nmf_rank1and2(As, Winit, Hinit, params_r2);
+        else
+            error('k > 2 is not implement yet!');
+        end
 
-        [Ws{iter}, Hs{iter}] = nmfsh_comb_rank2(As, rand(size(As,1),2), rand(2,size(As,2)),params_r2);
-
-        if iter <= total
+%         if iter <= total
          
             % fix W and use unweighted version of A to get H            
             
-%             [Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*A,0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
-            % Sangho Suh writed as above, revised by Chongming Gao
-            [Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*Rs{iter},0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
-            
+            %             [Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*A,0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
+            % Sangho Suh writed as above, revised by Chongming Gao. The
+            % following code can also be truncated.
+%             [Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*Rs{iter},0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
+
             % update residual matrix 
             Rs{iter+1} = update_res_matrix(Rs{iter}, Ws{iter},Hs{iter}); 
-            
-        end
+            figure
+            imagesc(Rs{iter+1});
+            hold off
+            unexplained = sum(sum(Rs{iter + 1}))
+%         end
+            a = 1;
         
     end
     

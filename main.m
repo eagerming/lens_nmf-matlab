@@ -175,7 +175,7 @@ for numOfLoop=1:loop
             param = [-1 .5];
                         
             tic
-            [H{mcnt},W{mcnt}]=nmfsh_comb(target_A', k_std, param); 
+            [H{mcnt},W{mcnt}] = nmfsh_comb(target_A', k_std, param); 
             speed{mcnt} = toc;
             
             H{mcnt} = H{mcnt}'; % store transposed version of H
