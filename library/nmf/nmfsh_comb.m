@@ -109,8 +109,11 @@ for i=1:maxiter
         changedW=length(find(idxW ~= idxWold)); changedH=length(find(idxH ~= idxHold));
         if (changedW<=wminchange) & (changedH==0), inc=inc+1;, else inc=0;, end
         
-        resmat=min(H,(W'*W)*H-W'*A+beta*ones(k,k)*H); resvec=resmat(:);
-        resmat=min(W,W*(H*H')-A*H'+eta2*W); resvec=[resvec; resmat(:)];
+%         resmat=min(H,(W'*W)*H-W'*A+beta*ones(k,k)*H); 
+        resmat=min(H,(W'*W)*H-W'*A+beta); % by Chongming Gao
+        resvec=resmat(:);
+        resmat=min(W,W*(H*H')-A*H'+eta2*W); 
+        resvec=[resvec; resmat(:)];
         conv=norm(resvec,1); %L1-norm
         convnum=length(find(abs(resvec)>0));
         erravg=conv/convnum;

@@ -117,7 +117,7 @@ function [Ws, Hs, Drs, Dcs, As] = lens_nmf_1and2d(A, k, topk, total, isWithSampl
          
             % fix W and use unweighted version of A to get H            
             
-            %             [Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*A,0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
+            %[Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*A,0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
             % Sangho Suh writed as above, revised by Chongming Gao. The
             % following code can also be truncated.
 %             [Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*Rs{iter},0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');

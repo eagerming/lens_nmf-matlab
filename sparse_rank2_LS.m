@@ -1,28 +1,39 @@
-function H = anls_entry_rank2_precompute(left, right, H)
+function H = sparse_rank2_LS(left, right)
 
 % left: 2*2
 % right: n*2
-% Returning H of size n*2 also
+% Returning H of size n*2
 %
-% Da Kuang, Haesun Park
-% Feb 2013
+% Chongming Gao
+% Oct 2018
+% Compute the least square problem with coefficient matrix and solution
+% matrix being rank two.
 
-
-% Solve min_H ||(A' - H' * W')||^2, given A and W.
+% Solve min_H ||(A' - H' * W')||^2 + , given A and W.
 % left = W' * W;
 % right = A' * W;
-% Usage: H = anls_entry_rank2_precompute(left, right, H')';
+% Usage 1: H = anls_entry_rank2_precompute(left, right, H')';
 
 % Or solve min_W ||(A -  WH)||^2, given A and H.
 % left = H * H';
 % right = A * H';
-% Usage: W = anls_entry_rank2_precompute(left, right, W);
-
+% Usage 2: W = anls_entry_rank2_precompute(left, right, W);
 
 % The comments below are apply for the first usage.
 
+% Reference:
+%
+%  [1] Chongming Gao et al. 
+%      BoostCF: Explainable Boost Collaborative Filtering by Leveraging Social network
+%      and Feature Information
+%
+%  [2] Da Kuang Haesun Park
+%      Fast Rank-2 Nonnegative Matrix Factorization for Hierarchical Document Clustering
+%      International conference on Knowledge Discovery and Data mining 2013
+
 
 n = size(right, 1);
+H = zeros(n,2);
 
 solve_either = zeros(n, 2);
 solve_either(:, 1) = right(:, 1) * (1./left(1,1)); % (A' * b1) / (b1^T * b1)

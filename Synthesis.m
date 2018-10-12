@@ -21,9 +21,6 @@ mu1 = [0.3 0.8];
 sigma1 = [0.001,0.0001;0.0001,0.0008] * 2;
 cluster1 = mvnrnd(mu1,sigma1,num);
 
-
-
-hold on;
 mu2 = [0.9 0.5]; 
 sigma2 = [0.001,0.0001;0.0001,0.0012] * 2; 
 cluster2 = mvnrnd(mu2,sigma2,num);
@@ -61,10 +58,10 @@ A = A';
 
 
 %% 
-k_s = 1;   % number of topics per stage in L-EnsNMF
-topk = 3; % number of top keywords to be listed in order within a topic (denoted as c1 in experiment section)
-total = 3; % number of stages in L-EnsNMF
-k_std = k_s*total; % number of total topics
+dim = 1;   % number of topics per stage in L-EnsNMF
+topk = 2; % number of top keywords to be listed in order within a topic (denoted as c1 in experiment section)
+total = 2; % number of stages in L-EnsNMF
+k_std = dim*total; % number of total topics
 
 
 % 
@@ -90,18 +87,20 @@ H2 = bsxfun(@times, W2_norm', H2);
 % quiver(zeros(1,k_std),zeros(1,k_std),W2(1,:),W2(2,:),0);
 
 %% L-EnsNMF
+param.alpha = 0.5;
+param.beta = 0.7;
+param.total = total;
+param.dim = dim;
+param.isWithSample = false;
 
-alpha = 0.7;
-[Ws_wgt, Hs_wgt, Drs, Dcs, As] = lens_nmf_1and2d(A, k_s, topk, total, false, alpha);
+[Ws_wgt, Hs_wgt, As] = boostCF(A, param);
 W4 = []; H4 = [];
 for i=1:length(Ws_wgt)
     W4 = [W4 Ws_wgt{i}];
     H4 = [H4; Hs_wgt{i}];
-end      
+end
 
-
-
-%%
+%
 figure
 hold on;
 axis([0 1.2 0 1.2]);

@@ -1,30 +1,45 @@
-% Localizd Ensemble of Nonnegative Matrix Factorization (L-EnsNMF)
+
+
+% BoostCF: Explainable Boost Collaborative Filtering by Leveraging Social network
+% and Feature Information
 %
-% Written by Sangho Suh (sh31659@gmail.com)
+% Written by Chongming Gao (chongming.gao@gmail.com)
 %            Dept. of Computer Science and Engineering,
-%            Korea University
+%            University of Electronic Science and Technology of China
 %
 % Reference:
 %
-%  [1] Sangho Suh et al.
+%  [1] Chongming Gao et al. 
+%      BoostCF: Explainable Boos t Collaborative Filtering by Leveraging Social network
+%      and Feature Information
+% 
+%  [2] Sangho Suh et al.
 %      Boosted L-EnsNMF: Local Topic Discovery via Ensemble of Nonnegative Matrix Factorization.
 %      IEEE International Conference on Data Mining 2016.
 %
-%  [2] Da Kuang Haesun Park
+%  [3] Da Kuang Haesun Park
 %      Fast Rank-2 Nonnegative Matrix Factorization for Hierarchical Document Clustering
 %      International conference on Knowledge Discovery and Data mining 2013
+% 
+%  [4] Hyunsoo Kim and Haesun Park
+%      Sparse non-negative matrix factorizations via alternating 
+%      non-negativity-constrained least squares for microarray data analysis
 %
-% Please send bug reports, comments, or questions to Sangho Suh.
+% Please send bug reports, comments, or questions to Chongming Gao.
 % This code comes with no guarantee or warranty of any kind.
 %
-% Last modified 09/26/2016
+% Last modified 10/26/2018
 %
 % <Inputs>
 %
 %        A : Input matrix 
-%        k : Number of topics
-%        topk : Number of keywords
+%        k : Number of dimensions per iteration
+%        total : Maximal dimension dimension
 %        iter : Number of iterations
+%        beta : coefficient for sparsity control. 
+%               Larger beta generates higher sparseness on H.
+%               Too large beta is not recommended.
+%        isWithSample : If true, resample and reconstruct the residue matrix
 %
 % <Outputs>
 %
@@ -37,50 +52,59 @@
 %
 % [Ws, Hs, Drs, Dcs, As] = lens_nmf(A, k, topk, iter); 
 
-function [Ws, Hs, Drs, Dcs, As] = lens_nmf_1and2d(A, k, topk, total, isWithSample, alpha)
 
+function [Ws, Hs, As] = boostCF(A, param, social_matrix)
 
-    % apply l2-normalization and get row-wise and column-wise cosine similarity values 
+    isWithSample = param.isWithSample;
+    total = param.total;
+    dim = param.dim;
+    
+    if isWithSample
+        % apply l2-normalization and get row-wise and column-wise cosine similarity values 
+        
+        A_l2norm_row = bsxfun(@rdivide,A',sqrt(sum((A').^2)))';
+        A_cossim_row = A_l2norm_row*A_l2norm_row'; 
 
-    A_l2norm_row = bsxfun(@rdivide,A',sqrt(sum((A').^2)))';
-    A_cossim_row = A_l2norm_row*A_l2norm_row'; 
-      
-    A_l2norm_col = bsxfun(@rdivide,A,sqrt(sum(A.^2)));
-    A_cossim_col = A_l2norm_col'*A_l2norm_col;
+        A_l2norm_col = bsxfun(@rdivide,A,sqrt(sum(A.^2)));
+        A_cossim_col = A_l2norm_col'*A_l2norm_col;
+        
+        Drs = []; Dcs = [];
+    end
     
     
 %%    
-    % initialization
+    % Initialization.
     Ws = cell(total, 1); 
     Hs = cell(total, 1); 
     Rs = cell(total, 1);
-
-    As = A; Rs{1} = A;
-
-	vec_norm = 2.0;
-	normW = true;
-	anls_alg = @anls_entry_rank2_precompute;
-	tol = 1e-4;
-	maxiter = 10000;
-
-    params_r2 = [];
-    params_r2.vec_norm = vec_norm;
-    params_r2.normW = normW;
-    params_r2.anls_alg = anls_alg;
-    params_r2.tol = tol;
-    params_r2.maxiter = maxiter;
-    params_r2.alpha = alpha;
+    As = A; 
+    Rs{1} = A;
     
-    Drs = []; Dcs = [];
+    % Parameters Setting.
+    
+    param.vec_norm = 2.0;
+    param.normW = true;
+    param.tol = 1e-4;
+    param.maxiter = 10000;
 
-    figure
-    imagesc(A);
-    hold off
+    if sum(social_matrix(:)) > eps
+        has_social_info = true;
+        num_user = size(A,2);
+        for i = 1:num_user
+            social_matrix(i,i) = 0;
+        end
+        social_matrix = bsxfun(@rdivide, social_matrix, sum(social_matrix,2));
+        combine_matrix = param.alpha * social_matrix + (1 - param.alpha) * eye(num_user);
+    else
+        has_social_info = false;
+    end
+    
+%     figure
+%     imagesc(A);
+%     hold off
     unexplained = sum(sum(A))
 %%
     for iter=1:(total) % loop for given number of iterations
-        
-        
 
         if isWithSample
             if iter == 1   
@@ -100,31 +124,25 @@ function [Ws, Hs, Drs, Dcs, As] = lens_nmf_1and2d(A, k, topk, total, isWithSampl
             As = Rs{iter};
         end
 
-        
-        if k == 2
-            Winit = rand(size(As,1),2);
-            Hinit = 
-            [Ws{iter}, Hs{iter}] = nmfsh_comb_rank2(As, rand(size(As,1),2), rand(2,size(As,2)),params_r2);
-        elseif k == 1
-            [Ws{iter}, Hs{iter}] = nmf_rank1and2(As, rand(size(As,1),1), rand(1,size(As,2)),params_r2);
-        else
-            error('k > 2 is not implement yet!');
+        [Ws{iter}, Hs{iter}] = boostNMF(As, dim, param);
+        if has_social_info 
+            Hs{iter} = (combine_matrix * Hs{iter}')';
         end
-
+        
 %         if iter <= total
          
             % fix W and use unweighted version of A to get H            
             
-            %             [Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*A,0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
+            %[Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*A,0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
             % Sangho Suh writed as above, revised by Chongming Gao. The
             % following code can also be truncated.
 %             [Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*Rs{iter},0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
 
             % update residual matrix 
             Rs{iter+1} = update_res_matrix(Rs{iter}, Ws{iter},Hs{iter}); 
-            figure
-            imagesc(Rs{iter+1});
-            hold off
+%             figure
+%             imagesc(Rs{iter+1});
+%             hold off
             unexplained = sum(sum(Rs{iter + 1}))
 %         end
             a = 1;
