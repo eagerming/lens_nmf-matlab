@@ -57,7 +57,10 @@ while ~isempty(Fset)
         break;
     end
     
-    oitr=oitr+1; if oitr > 5, fprintf('%d ',oitr);, end % HKim
+%     oitr=oitr+1; 
+%     if oitr > 5
+%         fprintf('%d ',oitr);
+%     end % HKim
     
     % Solve for the passive variables (uses subroutine below)
     K(:,Fset) = cssls(CtC, CtA(:,Fset), Pset(:,Fset));

@@ -54,7 +54,7 @@ function [pmi_val] = compute_pmi_log2(A, term_idx_mat,epsilon)
                     pmi_vals(cnt) = 0;
                 % if keywords co-occur in document(s), calculate their PMI value
                 else 
-                    pmi_vals(cnt) = log2( (mean(A(term_idx(i),:) & A(term_idx(j),:))+epsilon) / (mean(A(term_idx(i),:))*mean(A(term_idx(j),:)))   );
+                    pmi_vals(cnt) = log2( (mean(A(term_idx(i),:) & A(term_idx(j),:))+epsilon) / (mean(A(term_idx(i),:)) * mean(A(term_idx(j),:)))   );
                 end
                 cnt = cnt + 1;
             end

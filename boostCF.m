@@ -85,9 +85,8 @@ function [Ws, Hs, As] = boostCF(A, param, social_matrix)
     param.vec_norm = 2.0;
     param.normW = true;
     param.tol = 1e-4;
-    param.maxiter = 10000;
 
-    if sum(social_matrix(:)) > eps
+    if exist('social_matrix', 'var')
         has_social_info = true;
         num_user = size(A,2);
         for i = 1:num_user
@@ -124,11 +123,23 @@ function [Ws, Hs, As] = boostCF(A, param, social_matrix)
             As = Rs{iter};
         end
 
-        [Ws{iter}, Hs{iter}] = boostNMF(As, dim, param);
-        if has_social_info 
+%         [Ws{iter}, Hs{iter}] = boostNMF(As, dim, param);
+        %% Try to use SparseNM
+        % profile on  
+        param.r = dim;
+        [W, H, objective] = sparse_nmf(As, param);
+        % profile viewer/
+        % p = profile('info')
+        % s = profile('status')
+        
+        Ws{iter} = W;
+        Hs{iter} = H;
+        
+        %% 
+        if has_social_info
             Hs{iter} = (combine_matrix * Hs{iter}')';
         end
-        
+
 %         if iter <= total
          
             % fix W and use unweighted version of A to get H            

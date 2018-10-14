@@ -28,7 +28,7 @@ cluster2 = mvnrnd(mu2,sigma2,num);
 
 mu3 = [0.7 1];
 sigma3 = [0.0015,-0.0001;-0.0001,0.001] * 2; 
-cluster3 = mvnrnd(mu3,sigma3,1);
+cluster3 = mvnrnd(mu3,sigma3,num);
 
 
 A = [cluster1;cluster2;cluster3];
@@ -59,14 +59,16 @@ A = A';
 
 %% 
 dim = 1;   % number of topics per stage in L-EnsNMF
-topk = 2; % number of top keywords to be listed in order within a topic (denoted as c1 in experiment section)
-total = 2; % number of stages in L-EnsNMF
-k_std = dim*total; % number of total topics
+stage = 3; % number of stages in L-EnsNMF
+total_topic = dim * stage; % number of total topics
+beta = 0.6;
+
+topk = 10; % number of top keywords to be listed in order within a topic (denoted as c1 in experiment section)
 
 
 % 
 %% Standard NMF
-[W0,H0] = nmf(A, k_std);
+[W0,H0] = nmf(A, total_topic);
 % quiver(zeros(1,k_std),zeros(1,k_std), W0(1,:),W0(2,:),0);
 % 
 % %% 2d NMF
@@ -75,21 +77,44 @@ k_std = dim*total; % number of total topics
 % quiver(zeros(1,k_std),zeros(1,k_std),W1(1,:),W1(2,:),0);
 % 
 
-% 
+W = W0;
+H = H0;
+
+
+%% NMF + Sparse
+param = [-1 beta];
+[W1,H1] = nmfsh_comb(A, total_topic, param);
+
+W1_norm = sqrt(sum(W1.^2));
+W1 = bsxfun(@rdivide, W1, W1_norm);
+H1 = bsxfun(@times, W1_norm', H1);
+
+W = W1;
+H = H1;
+
 %% Sparse NMF
-param = [-1 .5];
-[W2,H2] = nmfsh_comb(A, k_std, param);
+param.r = total_topic;
+param.cf = 'ed';
+param.sparsity = beta;
+param.max_iter = 1000;
+% param.display = 1;
+[W2, H2] = sparse_nmf(A, param);
 
-W2_norm = sqrt(sum(W2.^2));
-W2 = bsxfun(@rdivide, W2, W2_norm);
-H2 = bsxfun(@times, W2_norm', H2);
-% 
-% quiver(zeros(1,k_std),zeros(1,k_std),W2(1,:),W2(2,:),0);
+W = W2;
+H = H2;
 
-%% L-EnsNMF
-param.alpha = 0.5;
-param.beta = 0.7;
-param.total = total;
+%% Ortho NMF
+
+[W3,H3] = weakorthonmf(A,rand(size(A,1),total_topic),rand(total_topic,size(A,2)),total_topic,1e-8);
+
+W = W3;
+H = H3;
+
+
+%% BoostCF
+
+param.beta = beta;
+param.total = stage;
 param.dim = dim;
 param.isWithSample = false;
 
@@ -100,7 +125,11 @@ for i=1:length(Ws_wgt)
     H4 = [H4; Hs_wgt{i}];
 end
 
-%
+W = W4;
+H = H4;
+
+
+%% 
 figure
 hold on;
 axis([0 1.2 0 1.2]);
@@ -109,13 +138,10 @@ scatter(cluster1(:,1),cluster1(:,2));
 scatter(cluster2(:,1),cluster2(:,2));
 scatter(cluster3(:,1),cluster3(:,2));
 
-quiver(zeros(1,k_std),zeros(1,k_std),W4(1,:),W4(2,:),0);
-visualBasicVector(W4,H4)
-hold off;
-%% Ortho NMF
 
-% [W3,H3] = weakorthonmf(A,rand(size(A,1),k_std),rand(2,size(A,k_std)),k_std,1e-8);
-% 
-% quiver(zeros(1,k_std),zeros(1,k_std),W3(1,:),W3(2,:),0);
+quiver(zeros(1,total_topic),zeros(1,total_topic),W(1,:),W(2,:),0);
+visualBasicVector(W,H)
+hold off;
+
 
 

@@ -1,11 +1,8 @@
 function [W, H, iter, grad] = boostNMF(A, dim, params)
-%%NMFSH_COMB_RANK2 - A fast algorithm for rank-2 nonnegative matrix factorization
-% [W, H, iter, grad] = nmfsh_comb_rank2(A, Winit, Hinit, params)
-%
+%%NMFSH_COMB_RANK2
 % Input parameters
 % A: m*n data matrix
-% Winit: m*2 matrix for initialization of W
-% Hinit: 2*n matrix for initialization of H
+% dim: dimension of the factors.
 % params (optional)
 % params.vec_norm (default=2): indicates which norm to use for the normalization of W or H,
 %                              e.g. vec_norm=2 means Euclidean norm; vec_norm=0 means no normalization.
@@ -20,7 +17,6 @@ function [W, H, iter, grad] = boostNMF(A, dim, params)
 %
 % Da Kuang, Haesun Park
 % Feb 2013
-
 
 %% Parameter Checking and Setting ======================================
 if ~exist('params', 'var')
@@ -42,10 +38,10 @@ if isfield(params, 'tol')
 else
     tol = 1e-4;
 end
-if isfield(params, 'maxiter')
-    maxiter = params.maxiter;
+if isfield(params, 'max_iter')
+    max_iter = params.max_iter;
 else
-    maxiter = 10000;
+    max_iter = 1000;
 end
 if isfield(params, 'beta')
     beta = params.beta;
@@ -73,7 +69,7 @@ if dim >= 3
 end
 
 
-for iter = 1 : maxiter
+for iter = 1 : max_iter
     if rank(left) < dim
 		fprintf('The matrix H is singular\n');
     end

@@ -67,7 +67,7 @@ S = use_mean_for_multiple_records(S, repeat_record);
 
 %% Save data to mat format
 
-save('data/dataname.mat', 'R', 'S', 'map');
+save(strcat('data/',dataname), 'R', 'S', 'map');
 
 end
 

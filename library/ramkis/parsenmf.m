@@ -1,4 +1,4 @@
-function [ Wtopk,Htopk,DocTopk,Wtopk_idx ] = parsenmf( W,H,vocab,topk)
+function [ Wtopk,Htopk,DocTopk,Wtopk_idx ] = parsenmf(W,H,vocab,topk)
 %W is of size mxk
 %H is of size kxn
 k = size(W,2);      % k <- num of topics
