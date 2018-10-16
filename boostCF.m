@@ -53,7 +53,7 @@
 % [Ws, Hs, Drs, Dcs, As] = lens_nmf(A, k, topk, iter); 
 
 
-function [Ws, Hs, As] = boostCF(A, param, social_matrix)
+function [Ws, Hs, iter,As] = boostCF(A, param, social_matrix)
 
     isWithSample = param.isWithSample;
     total = param.total;
@@ -86,7 +86,7 @@ function [Ws, Hs, As] = boostCF(A, param, social_matrix)
     param.normW = true;
     param.tol = 1e-4;
 
-    if exist('social_matrix', 'var')
+    if exist('social_matrix', 'var') && param.hasSocial
         has_social_info = true;
         num_user = size(A,2);
         for i = 1:num_user
@@ -101,7 +101,11 @@ function [Ws, Hs, As] = boostCF(A, param, social_matrix)
 %     figure
 %     imagesc(A);
 %     hold off
-    unexplained = sum(sum(A))
+    Original_unexplained = sum(sum(A));
+    disp("===============BoostCF=================")
+    fprintf("The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
+    unexplained_last = Original_unexplained;
+    
 %%
     for iter=1:(total) % loop for given number of iterations
 
@@ -154,10 +158,25 @@ function [Ws, Hs, As] = boostCF(A, param, social_matrix)
 %             figure
 %             imagesc(Rs{iter+1});
 %             hold off
-            unexplained = sum(sum(Rs{iter + 1}))
+            unexplained = sum(sum(Rs{iter + 1}));
+            percentage = unexplained/Original_unexplained;
+            
+            fprintf("Round [%d]: Unexplained part: %f, Percentage %f%%\n", ...
+                iter, full(unexplained), percentage * 100);
+            if isfield(param,'exitAtDeltaPercentage')
+                if (unexplained_last - unexplained)/Original_unexplained < param.exitAtDeltaPercentage
+                    break;
+                end
+            end
+            
+            unexplained_last = unexplained;
+            
 %         end
-            a = 1;
-        
+            
+    end
+    if isfield(param,'fid')
+        fprintf(param.fid, "Terminate at Round [%d]: Unexplained part: %f, Percentage %f%%, delta%%=%f\n", ...
+                iter, full(unexplained), percentage * 100, (unexplained_last - unexplained)/Original_unexplained);
     end
     
 end

@@ -168,8 +168,8 @@ w_ind = params.w_update_ind;
 update_h = sum(h_ind);
 update_w = sum(w_ind);
 
-fprintf(1,'Performing sparse NMF with beta-divergence, beta=%.1f\n',div_beta);
-tic
+% fprintf(1,'Performing sparse NMF with beta-divergence, beta=%.1f\n',div_beta);
+% tic
 for it = 1:params.max_iter
     
     % H updates
@@ -250,7 +250,7 @@ for it = 1:params.max_iter
     if it > 1 && params.conv_eps > 0
         e = abs(cost - last_cost) / last_cost; 
         if (e < params.conv_eps)
-            disp('Convergence reached, aborting iteration') 
+%             disp('Convergence reached, aborting iteration') 
             objective.div = objective.div(1:it); 
             objective.cost = objective.cost(1:it);
             break
@@ -258,5 +258,5 @@ for it = 1:params.max_iter
     end
 	last_cost = cost;
 end
-toc
+% toc;
 end

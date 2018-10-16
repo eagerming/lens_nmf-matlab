@@ -59,6 +59,8 @@ addpath('./evaluation/topic_coherence')
 addpath('./evaluation/total_document_coverage')
 
 
+
+
 %%
 % Specify number of experiment(s) to perform
 loop = 1;
@@ -94,6 +96,9 @@ for numOfLoop=1:loop
             load enron_tdm_n2000;
             has_dict = 1;
         end
+        
+        log_name = dataname;
+        [fid, fidpath] = create_new_log(log_name);
             
       %% initialize
 
@@ -140,9 +145,9 @@ for numOfLoop=1:loop
         
         ratio = 0.8;
         israndom = false;
-        [train, test] = rating_splitter(R, ratio, israndom);
+        [train_matrix, test_matrix] = rating_splitter(R, ratio, israndom);
         
-        R = train;
+        R = train_matrix;
         target_R = R;
         
         
@@ -217,161 +222,212 @@ for numOfLoop=1:loop
 
       %% LDA (4th method)
 
-        mcnt = mcnt + 1; mname{mcnt} = 'LDA'
-
-        T=total_topic;
-        % Set the hyperparameters
-        BETA=0.01;
-        ALPHA=50/T;
-        % The number of iterations
-        N = 1000;
-        % The random seed
-        SEED = 3;
-        % What output to show (0 = no output; 1 = iterations; 2 = all output)
-        OUTPUT = 1;
-
-        [ii,jj,ss] = find(R_original);
-
-        ss_num = ceil(sum(ss));
-
-        ii_new = zeros(ss_num,1);
-        jj_new = zeros(ss_num,1);
-
-        cnt = 1;
-        for i=1:length(ss)
-            ii_new(cnt:(cnt+ss(i)-1)) = ii(i);
-            jj_new(cnt:(cnt+ss(i)-1)) = jj(i);
-            cnt = cnt + ss(i);
-        end
-
-        tic
-        [V{mcnt}, U{mcnt}, ~ ] = GibbsSamplerLDA( ii_new , jj_new , T , N , ALPHA , BETA , SEED , OUTPUT );
-        speed{mcnt} = toc;
-
-        U{mcnt} = U{mcnt}';
+%         mcnt = mcnt + 1; mname{mcnt} = 'LDA'
+% 
+%         T=total_topic;
+%         % Set the hyperparameters
+%         BETA=0.01;
+%         ALPHA=50/T;
+%         % The number of iterations
+%         N = 1000;
+%         % The random seed
+%         SEED = 3;
+%         % What output to show (0 = no output; 1 = iterations; 2 = all output)
+%         OUTPUT = 1;
+% 
+%         [ii,jj,ss] = find(R);
+% 
+%         ss_num = ceil(sum(ss));
+% 
+%         ii_new = zeros(ss_num,1);
+%         jj_new = zeros(ss_num,1);
+% 
+%         cnt = 1;
+%         for i=1:length(ss)
+%             ii_new(cnt:(cnt+ss(i)-1)) = ii(i);
+%             jj_new(cnt:(cnt+ss(i)-1)) = jj(i);
+%             cnt = cnt + ss(i);
+%         end
+% 
+%         tic
+%         [V{mcnt}, U{mcnt}, ~ ] = GibbsSamplerLDA( ii_new , jj_new , T , N , ALPHA , BETA , SEED , OUTPUT );
+%         speed{mcnt} = toc;
+% 
+%         U{mcnt} = U{mcnt}';
 
       %% BoostCF (5th method)
 
-        mcnt = mcnt + 1;
-        mname{mcnt} = sprintf('BoostCF')
-
-        tic
-        param.beta = beta;
-        param.total = stage;
-        param.dim = dim;
-        param.isWithSample = false;
-        param.maxiter = 100;
-        param.max_iter = 100;
+      % =========================================================
+        num_beta = 5;
+        beta_list = linspace(0, 0.8, num_beta);
+        dim_list = 1:3;
+        alpha_list = [0 0.3 0.5 0.8];
         
-        param.display = 0;
-        param.cf = 'ed';
-        param.conv_eps = 1e-4;
-        param.sparsity = beta;
         
+        stage = 100;
+      % =========================================================
+        
+        for ind_dim = 1:length(dim_list)
+            for ind_beta = 1:num_beta
+                for ind_alpha = 1:length(alpha_list)
 
-        [Ws_wgt, Hs_wgt, As] = boostCF(target_R, param);
-        speed{mcnt} = toc;
+                % ===================================================
+                    beta = beta_list(ind_beta);
+                    dim = dim_list(ind_dim);
+                    alpha = alpha_list(ind_alpha);
+                    mcnt = mcnt + 1;
 
-        V{mcnt} = []; U{mcnt} = [];
-        for i=1:length(Ws_wgt)
-            V{mcnt} = [V{mcnt} Ws_wgt{i}];
-            U{mcnt} = [U{mcnt}; Hs_wgt{i}];
-        end    
+                    param.exitAtDeltaPercentage = 1e-4;
+                    param.alpha = alpha;
+                    param.beta = beta;
+                    param.total = stage;
+                    param.dim = dim;
+                    param.isWithSample = false;
+                    param.maxiter = 100;
+                    param.max_iter = 100;
+                    param.fid = fid;
+                    param.hasSocial = true;
+
+                    param.display = 0;
+                    param.cf = 'ed';
+                    param.conv_eps = 1e-4;
+                    param.sparsity = beta;
+                
+                % ===================================================
+                
+                    mname{mcnt} = sprintf('BoostCF, beta=%.2f, dim=%d, alpha=%.1f', beta, dim, alpha);
+                    fprintf('BoostCF #[%d], beta=%.2f, dim=%d, alpha=%.2f\n',mcnt, beta, dim, alpha);
+                    fprintf(fid, 'BoostCF #[%d], beta=%.2f, dim=%d, alpha=%.2f\n',mcnt, beta, dim, alpha);
+
+
+                    tic;
+                    [Ws_wgt, Hs_wgt] = boostCF(target_R, param);
+                    speed{mcnt} = toc;
+
+                    V{mcnt} = []; U{mcnt} = [];
+                    for i=1:length(Ws_wgt)
+                        V{mcnt} = [V{mcnt} Ws_wgt{i}];
+                        U{mcnt} = [U{mcnt}; Hs_wgt{i}];
+                    end
+                end
+            end
+        end
         
         %% BoostCF (5th method) 2 nd Setting
 
-        mcnt = mcnt + 1;
-        mname{mcnt} = sprintf('BoostCF')
-        
-        dim = 4;   % number of topics per stage in L-EnsNMF
-        stage = 4; % number of stages in L-EnsNMF
-%         total_topic = dim * stage; % number of total topics
-        beta = 0.6;
-
-        tic
-        param.beta = beta;
-        param.total = stage;
-        param.dim = dim;
-        param.isWithSample = false;
-        param.maxiter = 100;
-        param.max_iter = 100;
-        
-        param.display = 0;
-        param.cf = 'ed';
-        param.conv_eps = 1e-4;
-        param.sparsity = beta;
-        
-
-        [Ws_wgt, Hs_wgt, As] = boostCF(target_R, param);
-        speed{mcnt} = toc;
-
-        V{mcnt} = []; U{mcnt} = [];
-        for i=1:length(Ws_wgt)
-            V{mcnt} = [V{mcnt} Ws_wgt{i}];
-            U{mcnt} = [U{mcnt}; Hs_wgt{i}];
-        end    
+%         mcnt = mcnt + 1;
+%         mname{mcnt} = sprintf('BoostCF')
+%         
+%         dim = 4;   % number of topics per stage in L-EnsNMF
+%         stage = 4; % number of stages in L-EnsNMF
+% %         total_topic = dim * stage; % number of total topics
+%         beta = 0.6;
+% 
+%         tic
+%         param.beta = beta;
+%         param.total = stage;
+%         param.dim = dim;
+%         param.isWithSample = false;
+%         param.maxiter = 100;
+%         param.max_iter = 100;
+%         
+%         param.display = 0;
+%         param.cf = 'ed';
+%         param.conv_eps = 1e-4;
+%         param.sparsity = beta;
+%         
+% 
+%         [Ws_wgt, Hs_wgt, As] = boostCF(target_R, param);
+%         speed{mcnt} = toc;
+% 
+%         V{mcnt} = []; U{mcnt} = [];
+%         for i=1:length(Ws_wgt)
+%             V{mcnt} = [V{mcnt} Ws_wgt{i}];
+%             U{mcnt} = [U{mcnt}; Hs_wgt{i}];
+%         end    
 
       %%
 
-        Wtopk = {}; Htopk = {}; DocTopk = {}; Wtopk_idx = {};
-        topic_num = 1;
-        for i=1:mcnt
-            [Wtopk{i},Htopk{i},DocTopk{i},Wtopk_idx{i}] = parsenmf(V{i},U{i},dict_new,topk);
-%             mname{i}
-%             Wtopk{i}
-        end                        
+%         Wtopk = {}; Htopk = {}; DocTopk = {}; Wtopk_idx = {};
+%         topic_num = 1;
+%         for i=1:mcnt
+%             [Wtopk{i},Htopk{i},DocTopk{i},Wtopk_idx{i}] = parsenmf(V{i},U{i},dict_new,topk);
+% %             mname{i}
+% %             Wtopk{i}
+%         end                        
 
         
-      %% Topic Coherence (in PMI)
+      % ============= Topic Coherence (in PMI) ============= 
 % 
-        % create a zero matrix to store PMI values
-        pmi_vals = zeros(size(Wtopk_idx{1},2),mcnt);  
-        epsilon = 1e-3    % default value
+%         % create a zero matrix to store PMI values
+%         pmi_vals = zeros(size(Wtopk_idx{1},2),mcnt);  
+%         epsilon = 1e-3    % default value
+% 
+%         for i=1:mcnt
+%             for topic_idx=1:size(Wtopk_idx{i},2)
+%                 pmi_vals(topic_idx,i) = compute_pmi_log2(R, Wtopk_idx{i}(:,topic_idx),epsilon);
+%             end
+%         end    
+%         
+%         pmi_vals
 
-        for i=1:mcnt
-            for topic_idx=1:size(Wtopk_idx{i},2)
-                pmi_vals(topic_idx,i) = compute_pmi_log2(R, Wtopk_idx{i}(:,topic_idx),epsilon);
-            end
-        end    
-        
-        pmi_vals
+      % =============  Total Document Coverage  ============= 
 
-      %% Total Document Coverage 
-
-        min_nterm_list = 3:10; % min number of keywords doc MUST contain (c2 in the paper)
-
-        qualtopic = {}; totcvrg= {};
-        qualtopic_mat = zeros(length(min_nterm_list), mcnt);
-        totcvrg_mat = zeros(length(min_nterm_list), mcnt);
-
-        % totcvrg_mat is a calculation of how many documents k topics covered
-        for min_nterm = min_nterm_list(:)'
-            for idx=1:mcnt
-                [qualtopic{idx}, totcvrg{idx}] = compute_total_doc_cvrg(R, 	Wtopk_idx{idx}, min_nterm);
-            end
-            qualtopic_mat(min_nterm,:) = mean(cell2mat(qualtopic')');
-            totcvrg_mat(min_nterm,:) = cell2mat(totcvrg);
-        end
-        
-        totcvrg_mat
+%         min_nterm_list = 3:10; % min number of keywords doc MUST contain (c2 in the paper)
+% 
+%         qualtopic = {}; totcvrg= {};
+%         qualtopic_mat = zeros(length(min_nterm_list), mcnt);
+%         totcvrg_mat = zeros(length(min_nterm_list), mcnt);
+% 
+%         % totcvrg_mat is a calculation of how many documents k topics covered
+%         for min_nterm = min_nterm_list(:)'
+%             for idx=1:mcnt
+%                 [qualtopic{idx}, totcvrg{idx}] = compute_total_doc_cvrg(R, 	Wtopk_idx{idx}, min_nterm);
+%             end
+%             qualtopic_mat(min_nterm,:) = mean(cell2mat(qualtopic')');
+%             totcvrg_mat(min_nterm,:) = cell2mat(totcvrg);
+%         end
+%         
+%         totcvrg_mat
         
        %% Performance
-       
-       
-       Result=CalcPerf(Refernce,Test)
+        mcnt = length(V);
+        K_list = 1:30;
+        for i = 1:mcnt
+            final_result{i} = evaluation(V{i}, U{i}, test_matrix, K_list);
+        end
+        
+%         mcnt = 1:4;
+        topN = 7;
+        [TopK_result, TopKindex] = select_good_result(final_result, topN, mcnt);
+        
+        fields = fieldnames(TopK_result{1});
+        for i = 1 : length(fields)
+            figure;
+            hold on;
+            for idx = 1:topN
+                y = zeros(length(K_list),1);
+                for k = 1:length(K_list)
+                    y(k) = TopK_result{idx}(k).(fields{i});
+                end
+                plot(K_list, y); 
+            end
+            title(fields(i));
+            legend(mname(TopKindex));
+            hold off;
+        end
+        
+        
+        
+        
+        %% Save Data
+        
+        saveLog(fid, final_result, K_list, mname);
+        fclose(fid);
+        
+        saveResult(fidpath);
+        
 
-       %% Save Data
-%             if(choice==1)
-%                 save (sprintf('tlvl10_%03d',loop));
-%             elseif(choice==2)
-%                 save (sprintf('enron_tdm_n2000_%03d',loop));
-%             elseif(choice==3)
-%                 save (sprintf('reuters_%03d',loop));
-%             elseif(choice==4)
-%                 save (sprintf('vis_paper_%03d',loop));
-%             elseif(choice==5)
-%                 save (sprintf('20newsgroups_%03d',loop));
-%             end        
         end        
 
 end    
