@@ -1,5 +1,4 @@
-function saveResult(fidpath)
-    
+function saveName = saveResult(fidpath)
     pos = strfind(fidpath,'/');
     if isempty(pos)
         pos = strfind(fidpath,'\');
@@ -9,5 +8,4 @@ function saveResult(fidpath)
     name = extractBefore(name,pos);
     
     saveName = fullfile( "result" , name);
-    save(saveName);
 end
