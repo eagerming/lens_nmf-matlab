@@ -144,7 +144,7 @@ for numOfLoop=1:loop
         %% Splitting
         
         ratio = 0.8;
-        israndom = false;
+        israndom = true;
         [train_matrix, test_matrix] = rating_splitter(R, ratio, israndom);
         
         R = train_matrix;

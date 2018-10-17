@@ -54,7 +54,7 @@ function saveLog(fid, final_result, K_list, mname)
     for i = 1 : length(mcnt)
         fprintf(fid, mname{i});
         fprintf(fid, "\t");
-        for j = 1 :  length(fields)
+        for j = 1 : length(fields)
             fprintf(fid, num2str(final_result{index(i)}(maxId).(fields{j})));
             fprintf(fid, "\t");
         end

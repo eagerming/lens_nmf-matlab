@@ -9,6 +9,8 @@ function [train, test] = rating_splitter(R, ratio, israndom)
     test = sparse(size(R,1),size(R,2));
     
     if israndom
+        rng('default')
+        rng(0);
         index = randperm(num);
     else
         index = 1:num;
