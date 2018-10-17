@@ -264,7 +264,7 @@ for numOfLoop=1:loop
         alpha_list = [0 0.3 0.5 0.8];
         
         
-        stage = 100;
+        stage = 1000;
       % =========================================================
         
         for ind_dim = 1:length(dim_list)

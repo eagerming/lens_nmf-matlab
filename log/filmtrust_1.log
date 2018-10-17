@@ -1,0 +1,253 @@
+BoostCF #[4], beta=0.00, dim=1, alpha=0.00
+Terminate at Round [288]: Unexplained part: 2700.891847, Percentage 3.172593%, delta%=0.000093
+BoostCF #[5], beta=0.00, dim=1, alpha=0.30
+Terminate at Round [288]: Unexplained part: 2700.891847, Percentage 3.172593%, delta%=0.000093
+BoostCF #[6], beta=0.00, dim=1, alpha=0.50
+Terminate at Round [288]: Unexplained part: 2700.891847, Percentage 3.172593%, delta%=0.000093
+BoostCF #[7], beta=0.00, dim=1, alpha=0.80
+Terminate at Round [288]: Unexplained part: 2700.891847, Percentage 3.172593%, delta%=0.000093
+BoostCF #[8], beta=0.20, dim=1, alpha=0.00
+Terminate at Round [288]: Unexplained part: 5833.998150, Percentage 6.852885%, delta%=0.000100
+BoostCF #[9], beta=0.20, dim=1, alpha=0.30
+Terminate at Round [288]: Unexplained part: 5833.998150, Percentage 6.852885%, delta%=0.000100
+BoostCF #[10], beta=0.20, dim=1, alpha=0.50
+Terminate at Round [288]: Unexplained part: 5833.998150, Percentage 6.852885%, delta%=0.000100
+BoostCF #[11], beta=0.20, dim=1, alpha=0.80
+Terminate at Round [288]: Unexplained part: 5833.998150, Percentage 6.852885%, delta%=0.000100
+BoostCF #[12], beta=0.40, dim=1, alpha=0.00
+Terminate at Round [255]: Unexplained part: 8868.050766, Percentage 10.416824%, delta%=0.000100
+BoostCF #[13], beta=0.40, dim=1, alpha=0.30
+Terminate at Round [255]: Unexplained part: 8868.050766, Percentage 10.416824%, delta%=0.000100
+BoostCF #[14], beta=0.40, dim=1, alpha=0.50
+Terminate at Round [255]: Unexplained part: 8868.050766, Percentage 10.416824%, delta%=0.000100
+BoostCF #[15], beta=0.40, dim=1, alpha=0.80
+Terminate at Round [255]: Unexplained part: 8868.050766, Percentage 10.416824%, delta%=0.000100
+BoostCF #[16], beta=0.60, dim=1, alpha=0.00
+Terminate at Round [256]: Unexplained part: 11397.830367, Percentage 13.388421%, delta%=0.000100
+BoostCF #[17], beta=0.60, dim=1, alpha=0.30
+Terminate at Round [256]: Unexplained part: 11397.830367, Percentage 13.388421%, delta%=0.000100
+BoostCF #[18], beta=0.60, dim=1, alpha=0.50
+Terminate at Round [256]: Unexplained part: 11397.830367, Percentage 13.388421%, delta%=0.000100
+BoostCF #[19], beta=0.60, dim=1, alpha=0.80
+Terminate at Round [256]: Unexplained part: 11397.830367, Percentage 13.388421%, delta%=0.000100
+BoostCF #[20], beta=0.80, dim=1, alpha=0.00
+Terminate at Round [399]: Unexplained part: 11528.393201, Percentage 13.541786%, delta%=0.000100
+BoostCF #[21], beta=0.80, dim=1, alpha=0.30
+Terminate at Round [399]: Unexplained part: 11528.393201, Percentage 13.541786%, delta%=0.000100
+BoostCF #[22], beta=0.80, dim=1, alpha=0.50
+Terminate at Round [399]: Unexplained part: 11528.393201, Percentage 13.541786%, delta%=0.000100
+BoostCF #[23], beta=0.80, dim=1, alpha=0.80
+Terminate at Round [399]: Unexplained part: 11528.393201, Percentage 13.541786%, delta%=0.000100
+BoostCF #[24], beta=0.00, dim=2, alpha=0.00
+Terminate at Round [260]: Unexplained part: 1837.635801, Percentage 2.158572%, delta%=0.000100
+BoostCF #[25], beta=0.00, dim=2, alpha=0.30
+Terminate at Round [260]: Unexplained part: 1837.635801, Percentage 2.158572%, delta%=0.000100
+BoostCF #[26], beta=0.00, dim=2, alpha=0.50
+Terminate at Round [260]: Unexplained part: 1837.635801, Percentage 2.158572%, delta%=0.000100
+BoostCF #[27], beta=0.00, dim=2, alpha=0.80
+Terminate at Round [260]: Unexplained part: 1837.635801, Percentage 2.158572%, delta%=0.000100
+BoostCF #[28], beta=0.20, dim=2, alpha=0.00
+Terminate at Round [221]: Unexplained part: 3284.314917, Percentage 3.857909%, delta%=0.000090
+BoostCF #[29], beta=0.20, dim=2, alpha=0.30
+Terminate at Round [221]: Unexplained part: 3284.314917, Percentage 3.857909%, delta%=0.000090
+BoostCF #[30], beta=0.20, dim=2, alpha=0.50
+Terminate at Round [221]: Unexplained part: 3284.314917, Percentage 3.857909%, delta%=0.000090
+BoostCF #[31], beta=0.20, dim=2, alpha=0.80
+Terminate at Round [221]: Unexplained part: 3284.314917, Percentage 3.857909%, delta%=0.000090
+BoostCF #[32], beta=0.40, dim=2, alpha=0.00
+Terminate at Round [258]: Unexplained part: 6873.314297, Percentage 8.073714%, delta%=0.000100
+BoostCF #[33], beta=0.40, dim=2, alpha=0.30
+Terminate at Round [258]: Unexplained part: 6873.314297, Percentage 8.073714%, delta%=0.000100
+BoostCF #[34], beta=0.40, dim=2, alpha=0.50
+Terminate at Round [258]: Unexplained part: 6873.314297, Percentage 8.073714%, delta%=0.000100
+BoostCF #[35], beta=0.40, dim=2, alpha=0.80
+Terminate at Round [258]: Unexplained part: 6873.314297, Percentage 8.073714%, delta%=0.000100
+BoostCF #[36], beta=0.60, dim=2, alpha=0.00
+Terminate at Round [197]: Unexplained part: 9534.405553, Percentage 11.199555%, delta%=0.000100
+BoostCF #[37], beta=0.60, dim=2, alpha=0.30
+Terminate at Round [197]: Unexplained part: 9534.405553, Percentage 11.199555%, delta%=0.000100
+BoostCF #[38], beta=0.60, dim=2, alpha=0.50
+Terminate at Round [197]: Unexplained part: 9534.405553, Percentage 11.199555%, delta%=0.000100
+BoostCF #[39], beta=0.60, dim=2, alpha=0.80
+Terminate at Round [197]: Unexplained part: 9534.405553, Percentage 11.199555%, delta%=0.000100
+BoostCF #[40], beta=0.80, dim=2, alpha=0.00
+Terminate at Round [308]: Unexplained part: 10741.330655, Percentage 12.617266%, delta%=0.000100
+BoostCF #[41], beta=0.80, dim=2, alpha=0.30
+Terminate at Round [308]: Unexplained part: 10741.330655, Percentage 12.617266%, delta%=0.000100
+BoostCF #[42], beta=0.80, dim=2, alpha=0.50
+Terminate at Round [308]: Unexplained part: 10741.330655, Percentage 12.617266%, delta%=0.000100
+BoostCF #[43], beta=0.80, dim=2, alpha=0.80
+Terminate at Round [308]: Unexplained part: 10741.330655, Percentage 12.617266%, delta%=0.000100
+BoostCF #[44], beta=0.00, dim=3, alpha=0.00
+Terminate at Round [227]: Unexplained part: 1346.939588, Percentage 1.582178%, delta%=0.000100
+BoostCF #[45], beta=0.00, dim=3, alpha=0.30
+Terminate at Round [227]: Unexplained part: 1346.939588, Percentage 1.582178%, delta%=0.000100
+BoostCF #[46], beta=0.00, dim=3, alpha=0.50
+Terminate at Round [227]: Unexplained part: 1346.939588, Percentage 1.582178%, delta%=0.000100
+BoostCF #[47], beta=0.00, dim=3, alpha=0.80
+Terminate at Round [227]: Unexplained part: 1346.939588, Percentage 1.582178%, delta%=0.000100
+BoostCF #[48], beta=0.20, dim=3, alpha=0.00
+Terminate at Round [221]: Unexplained part: 1825.681599, Percentage 2.144530%, delta%=0.000049
+BoostCF #[49], beta=0.20, dim=3, alpha=0.30
+Terminate at Round [221]: Unexplained part: 1825.681599, Percentage 2.144530%, delta%=0.000049
+BoostCF #[50], beta=0.20, dim=3, alpha=0.50
+Terminate at Round [221]: Unexplained part: 1825.681599, Percentage 2.144530%, delta%=0.000049
+BoostCF #[51], beta=0.20, dim=3, alpha=0.80
+Terminate at Round [221]: Unexplained part: 1825.681599, Percentage 2.144530%, delta%=0.000049
+BoostCF #[52], beta=0.40, dim=3, alpha=0.00
+Terminate at Round [137]: Unexplained part: 4468.276167, Percentage 5.248645%, delta%=0.000100
+BoostCF #[53], beta=0.40, dim=3, alpha=0.30
+Terminate at Round [137]: Unexplained part: 4468.276167, Percentage 5.248645%, delta%=0.000100
+BoostCF #[54], beta=0.40, dim=3, alpha=0.50
+Terminate at Round [137]: Unexplained part: 4468.276167, Percentage 5.248645%, delta%=0.000100
+BoostCF #[55], beta=0.40, dim=3, alpha=0.80
+Terminate at Round [137]: Unexplained part: 4468.276167, Percentage 5.248645%, delta%=0.000100
+BoostCF #[56], beta=0.60, dim=3, alpha=0.00
+Terminate at Round [168]: Unexplained part: 8226.969151, Percentage 9.663780%, delta%=0.000100
+BoostCF #[57], beta=0.60, dim=3, alpha=0.30
+Terminate at Round [168]: Unexplained part: 8226.969151, Percentage 9.663780%, delta%=0.000100
+BoostCF #[58], beta=0.60, dim=3, alpha=0.50
+Terminate at Round [168]: Unexplained part: 8226.969151, Percentage 9.663780%, delta%=0.000100
+BoostCF #[59], beta=0.60, dim=3, alpha=0.80
+Terminate at Round [168]: Unexplained part: 8226.969151, Percentage 9.663780%, delta%=0.000100
+BoostCF #[60], beta=0.80, dim=3, alpha=0.00
+Terminate at Round [230]: Unexplained part: 9853.829566, Percentage 11.574766%, delta%=0.000100
+BoostCF #[61], beta=0.80, dim=3, alpha=0.30
+Terminate at Round [230]: Unexplained part: 9853.829566, Percentage 11.574766%, delta%=0.000100
+BoostCF #[62], beta=0.80, dim=3, alpha=0.50
+Terminate at Round [230]: Unexplained part: 9853.829566, Percentage 11.574766%, delta%=0.000100
+BoostCF #[63], beta=0.80, dim=3, alpha=0.80
+Terminate at Round [230]: Unexplained part: 9853.829566, Percentage 11.574766%, delta%=0.000100
+
+===================== Average measures over K======================
+map	precision	recall	NDCG	hr	arhr	
+StandardNMF	6.1874e-05	0.00018562	0.00018344	0.00026921	0.00073375	0.00024458	
+SparseNMF	6.1874e-05	0.00018562	0.00018344	0.00026921	0.00073375	0.00024458	
+OrthoNMF	6.1874e-05	0.00018562	0.00018344	0.00026921	0.00073375	0.00024458	
+BoostCF, beta=0.00, dim=1, alpha=0.0	6.1874e-05	0.00018562	0.00018344	0.00026921	0.00073375	0.00024458	
+BoostCF, beta=0.00, dim=1, alpha=0.3	4.4222e-05	0.00017689	0.00017689	0.00023315	0.00070755	0.00017689	
+BoostCF, beta=0.00, dim=1, alpha=0.5	4.4222e-05	0.00017689	0.00017689	0.00023315	0.00070755	0.00017689	
+BoostCF, beta=0.00, dim=1, alpha=0.8	4.4222e-05	0.00017689	0.00017689	0.00023315	0.00070755	0.00017689	
+BoostCF, beta=0.20, dim=1, alpha=0.0	4.4222e-05	0.00017689	0.00017689	0.00023315	0.00070755	0.00017689	
+BoostCF, beta=0.20, dim=1, alpha=0.3	0	0	0	0.00031163	0	0	
+BoostCF, beta=0.20, dim=1, alpha=0.5	0	0	0	0.00031163	0	0	
+BoostCF, beta=0.20, dim=1, alpha=0.8	0	0	0	0.00031163	0	0	
+BoostCF, beta=0.40, dim=1, alpha=0.0	0	0	0	0.00031163	0	0	
+BoostCF, beta=0.40, dim=1, alpha=0.3	0	0	0	0.00028709	0	0	
+BoostCF, beta=0.40, dim=1, alpha=0.5	0	0	0	0.00028709	0	0	
+BoostCF, beta=0.40, dim=1, alpha=0.8	0	0	0	0.00028709	0	0	
+BoostCF, beta=0.60, dim=1, alpha=0.0	0	0	0	0.00028709	0	0	
+BoostCF, beta=0.60, dim=1, alpha=0.3	0	0	0	0.000264	0	0	
+BoostCF, beta=0.60, dim=1, alpha=0.5	0	0	0	0.000264	0	0	
+BoostCF, beta=0.60, dim=1, alpha=0.8	0	0	0	0.000264	0	0	
+BoostCF, beta=0.80, dim=1, alpha=0.0	0	0	0	0.000264	0	0	
+BoostCF, beta=0.80, dim=1, alpha=0.3	0	0	0	0.00026096	0	0	
+BoostCF, beta=0.80, dim=1, alpha=0.5	0	0	0	0.00026096	0	0	
+BoostCF, beta=0.80, dim=1, alpha=0.8	0	0	0	0.00026096	0	0	
+BoostCF, beta=0.00, dim=2, alpha=0.0	0	0	0	0.00026096	0	0	
+BoostCF, beta=0.00, dim=2, alpha=0.3	0	0	0	0.00025022	0	0	
+BoostCF, beta=0.00, dim=2, alpha=0.5	0	0	0	0.00025022	0	0	
+BoostCF, beta=0.00, dim=2, alpha=0.8	0	0	0	0.00025022	0	0	
+BoostCF, beta=0.20, dim=2, alpha=0.0	0	0	0	0.00025022	0	0	
+BoostCF, beta=0.20, dim=2, alpha=0.3	0	0	0	0.00023432	0	0	
+BoostCF, beta=0.20, dim=2, alpha=0.5	0	0	0	0.00023432	0	0	
+BoostCF, beta=0.20, dim=2, alpha=0.8	0	0	0	0.00023432	0	0	
+BoostCF, beta=0.40, dim=2, alpha=0.0	0	0	0	0.00023432	0	0	
+BoostCF, beta=0.40, dim=2, alpha=0.3	0	0	0	0.0002307	0	0	
+BoostCF, beta=0.40, dim=2, alpha=0.5	0	0	0	0.0002307	0	0	
+BoostCF, beta=0.40, dim=2, alpha=0.8	0	0	0	0.0002307	0	0	
+BoostCF, beta=0.60, dim=2, alpha=0.0	0	0	0	0.0002307	0	0	
+BoostCF, beta=0.60, dim=2, alpha=0.3	0	0	0	0.00021646	0	0	
+BoostCF, beta=0.60, dim=2, alpha=0.5	0	0	0	0.00021646	0	0	
+BoostCF, beta=0.60, dim=2, alpha=0.8	0	0	0	0.00021646	0	0	
+BoostCF, beta=0.80, dim=2, alpha=0.0	0	0	0	0.00021646	0	0	
+BoostCF, beta=0.80, dim=2, alpha=0.3	0	0	0	0.00020758	0	0	
+BoostCF, beta=0.80, dim=2, alpha=0.5	0	0	0	0.00020758	0	0	
+BoostCF, beta=0.80, dim=2, alpha=0.8	0	0	0	0.00020758	0	0	
+BoostCF, beta=0.00, dim=3, alpha=0.0	0	0	0	0.00020758	0	0	
+BoostCF, beta=0.00, dim=3, alpha=0.3	0	0	0	0.00020636	0	0	
+BoostCF, beta=0.00, dim=3, alpha=0.5	0	0	0	0.00020111	0	0	
+BoostCF, beta=0.00, dim=3, alpha=0.8	0	0	0	0.00020111	0	0	
+BoostCF, beta=0.20, dim=3, alpha=0.0	0	0	0	0.00020111	0	0	
+BoostCF, beta=0.20, dim=3, alpha=0.3	0	0	0	0.00020111	0	0	
+BoostCF, beta=0.20, dim=3, alpha=0.5	0	0	0	0.00019694	0	0	
+BoostCF, beta=0.20, dim=3, alpha=0.8	0	0	0	0.00019694	0	0	
+BoostCF, beta=0.40, dim=3, alpha=0.0	0	0	0	0.00019694	0	0	
+BoostCF, beta=0.40, dim=3, alpha=0.3	0	0	0	0.00019694	0	0	
+BoostCF, beta=0.40, dim=3, alpha=0.5	0	0	0	0.00019038	0	0	
+BoostCF, beta=0.40, dim=3, alpha=0.8	0	0	0	0.00019038	0	0	
+BoostCF, beta=0.60, dim=3, alpha=0.0	0	0	0	0.00019038	0	0	
+BoostCF, beta=0.60, dim=3, alpha=0.3	0	0	0	0.00019038	0	0	
+BoostCF, beta=0.60, dim=3, alpha=0.5	0	0	0	0.00018399	0	0	
+BoostCF, beta=0.60, dim=3, alpha=0.8	0	0	0	0.00018399	0	0	
+BoostCF, beta=0.80, dim=3, alpha=0.0	0	0	0	0.00018399	0	0	
+BoostCF, beta=0.80, dim=3, alpha=0.3	0	0	0	0.00018399	0	0	
+BoostCF, beta=0.80, dim=3, alpha=0.5	0	0	0	0.00011124	0	0	
+BoostCF, beta=0.80, dim=3, alpha=0.8	0	0	0	0.00011032	0	0	
+
+
+================ Largest measures over max_K=30 ==================
+map	precision	recall	NDCG	hr	arhr	
+StandardNMF	6.5514e-05	0.00019654	0.00019654	0.00027175	0.00078616	0.00026205	
+SparseNMF	6.5514e-05	0.00019654	0.00019654	0.00027175	0.00078616	0.00026205	
+OrthoNMF	6.5514e-05	0.00019654	0.00019654	0.00027175	0.00078616	0.00026205	
+BoostCF, beta=0.00, dim=1, alpha=0.0	6.5514e-05	0.00019654	0.00019654	0.00027175	0.00078616	0.00026205	
+BoostCF, beta=0.00, dim=1, alpha=0.3	4.9135e-05	0.00019654	0.00019654	0.00023569	0.00078616	0.00019654	
+BoostCF, beta=0.00, dim=1, alpha=0.5	4.9135e-05	0.00019654	0.00019654	0.00023569	0.00078616	0.00019654	
+BoostCF, beta=0.00, dim=1, alpha=0.8	4.9135e-05	0.00019654	0.00019654	0.00023569	0.00078616	0.00019654	
+BoostCF, beta=0.20, dim=1, alpha=0.0	4.9135e-05	0.00019654	0.00019654	0.00023569	0.00078616	0.00019654	
+BoostCF, beta=0.20, dim=1, alpha=0.3	0	0	0	0.00031203	0	0	
+BoostCF, beta=0.20, dim=1, alpha=0.5	0	0	0	0.00031203	0	0	
+BoostCF, beta=0.20, dim=1, alpha=0.8	0	0	0	0.00031203	0	0	
+BoostCF, beta=0.40, dim=1, alpha=0.0	0	0	0	0.00031203	0	0	
+BoostCF, beta=0.40, dim=1, alpha=0.3	0	0	0	0.00028837	0	0	
+BoostCF, beta=0.40, dim=1, alpha=0.5	0	0	0	0.00028837	0	0	
+BoostCF, beta=0.40, dim=1, alpha=0.8	0	0	0	0.00028837	0	0	
+BoostCF, beta=0.60, dim=1, alpha=0.0	0	0	0	0.00028837	0	0	
+BoostCF, beta=0.60, dim=1, alpha=0.3	0	0	0	0.00026561	0	0	
+BoostCF, beta=0.60, dim=1, alpha=0.5	0	0	0	0.00026561	0	0	
+BoostCF, beta=0.60, dim=1, alpha=0.8	0	0	0	0.00026561	0	0	
+BoostCF, beta=0.80, dim=1, alpha=0.0	0	0	0	0.00026561	0	0	
+BoostCF, beta=0.80, dim=1, alpha=0.3	0	0	0	0.00026235	0	0	
+BoostCF, beta=0.80, dim=1, alpha=0.5	0	0	0	0.00026235	0	0	
+BoostCF, beta=0.80, dim=1, alpha=0.8	0	0	0	0.00026235	0	0	
+BoostCF, beta=0.00, dim=2, alpha=0.0	0	0	0	0.00026235	0	0	
+BoostCF, beta=0.00, dim=2, alpha=0.3	0	0	0	0.00025145	0	0	
+BoostCF, beta=0.00, dim=2, alpha=0.5	0	0	0	0.00025145	0	0	
+BoostCF, beta=0.00, dim=2, alpha=0.8	0	0	0	0.00025145	0	0	
+BoostCF, beta=0.20, dim=2, alpha=0.0	0	0	0	0.00025145	0	0	
+BoostCF, beta=0.20, dim=2, alpha=0.3	0	0	0	0.00023644	0	0	
+BoostCF, beta=0.20, dim=2, alpha=0.5	0	0	0	0.00023644	0	0	
+BoostCF, beta=0.20, dim=2, alpha=0.8	0	0	0	0.00023644	0	0	
+BoostCF, beta=0.40, dim=2, alpha=0.0	0	0	0	0.00023644	0	0	
+BoostCF, beta=0.40, dim=2, alpha=0.3	0	0	0	0.00023225	0	0	
+BoostCF, beta=0.40, dim=2, alpha=0.5	0	0	0	0.00023225	0	0	
+BoostCF, beta=0.40, dim=2, alpha=0.8	0	0	0	0.00023225	0	0	
+BoostCF, beta=0.60, dim=2, alpha=0.0	0	0	0	0.00023225	0	0	
+BoostCF, beta=0.60, dim=2, alpha=0.3	0	0	0	0.00021812	0	0	
+BoostCF, beta=0.60, dim=2, alpha=0.5	0	0	0	0.00021812	0	0	
+BoostCF, beta=0.60, dim=2, alpha=0.8	0	0	0	0.00021812	0	0	
+BoostCF, beta=0.80, dim=2, alpha=0.0	0	0	0	0.00021812	0	0	
+BoostCF, beta=0.80, dim=2, alpha=0.3	0	0	0	0.00020956	0	0	
+BoostCF, beta=0.80, dim=2, alpha=0.5	0	0	0	0.00020956	0	0	
+BoostCF, beta=0.80, dim=2, alpha=0.8	0	0	0	0.00020956	0	0	
+BoostCF, beta=0.00, dim=3, alpha=0.0	0	0	0	0.00020956	0	0	
+BoostCF, beta=0.00, dim=3, alpha=0.3	0	0	0	0.00020723	0	0	
+BoostCF, beta=0.00, dim=3, alpha=0.5	0	0	0	0.00020298	0	0	
+BoostCF, beta=0.00, dim=3, alpha=0.8	0	0	0	0.00020298	0	0	
+BoostCF, beta=0.20, dim=3, alpha=0.0	0	0	0	0.00020298	0	0	
+BoostCF, beta=0.20, dim=3, alpha=0.3	0	0	0	0.00020298	0	0	
+BoostCF, beta=0.20, dim=3, alpha=0.5	0	0	0	0.00019843	0	0	
+BoostCF, beta=0.20, dim=3, alpha=0.8	0	0	0	0.00019843	0	0	
+BoostCF, beta=0.40, dim=3, alpha=0.0	0	0	0	0.00019843	0	0	
+BoostCF, beta=0.40, dim=3, alpha=0.3	0	0	0	0.00019843	0	0	
+BoostCF, beta=0.40, dim=3, alpha=0.5	0	0	0	0.00019183	0	0	
+BoostCF, beta=0.40, dim=3, alpha=0.8	0	0	0	0.00019183	0	0	
+BoostCF, beta=0.60, dim=3, alpha=0.0	0	0	0	0.00019183	0	0	
+BoostCF, beta=0.60, dim=3, alpha=0.3	0	0	0	0.00019183	0	0	
+BoostCF, beta=0.60, dim=3, alpha=0.5	0	0	0	0.00018531	0	0	
+BoostCF, beta=0.60, dim=3, alpha=0.8	0	0	0	0.00018531	0	0	
+BoostCF, beta=0.80, dim=3, alpha=0.0	0	0	0	0.00018531	0	0	
+BoostCF, beta=0.80, dim=3, alpha=0.3	0	0	0	0.00018531	0	0	
+BoostCF, beta=0.80, dim=3, alpha=0.5	0	0	0	0.00011281	0	0	
+BoostCF, beta=0.80, dim=3, alpha=0.8	0	0	0	0.00011185	0	0	
