@@ -425,7 +425,8 @@ for numOfLoop=1:loop
         saveLog(fid, final_result, K_list, mname);
         fclose(fid);
         
-        saveResult(fidpath);
+        saveName = saveResult(fidpath);
+        save(saveName);
         
 
         end        
