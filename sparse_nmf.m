@@ -91,6 +91,10 @@ end
 if ~isfield(params, 'cf') 
     params.cf = 'kl';
 end
+if ~isfield(params, 'is_zero_mask_of_missing') 
+    params.is_zero_mask_of_missing = true;
+end
+
 switch params.cf 
     case 'is'
         params.beta = 0; 
@@ -168,6 +172,11 @@ w_ind = params.w_update_ind;
 update_h = sum(h_ind);
 update_w = sum(w_ind);
 
+if params.is_zero_mask_of_missing
+	mask = v==0;
+    v(mask) = lambda(mask);
+end
+
 % fprintf(1,'Performing sparse NMF with beta-divergence, beta=%.1f\n',div_beta);
 % tic
 for it = 1:params.max_iter
@@ -192,6 +201,9 @@ for it = 1:params.max_iter
                 h(h_ind, :) = h(h_ind, :) .* dmh ./ dph;
         end
         lambda = max(w * h, flr); 
+        if params.is_zero_mask_of_missing
+            v(mask) = lambda(mask);
+        end
     end
     
     % W updates
@@ -222,6 +234,9 @@ for it = 1:params.max_iter
         % Normalize the columns of W
         w = bsxfun(@rdivide,w,sqrt(sum(w.^2)));
         lambda = max(w * h, flr); 
+        if params.is_zero_mask_of_missing
+            v(mask) = lambda(mask);
+        end
     end
 
     % Compute the objective function

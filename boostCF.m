@@ -72,6 +72,8 @@ function [Ws, Hs, iter,As] = boostCF(A, param, social_matrix)
     end
     
     
+    
+    
 %%    
     % Initialization.
     Ws = cell(total, 1); 
@@ -79,6 +81,11 @@ function [Ws, Hs, iter,As] = boostCF(A, param, social_matrix)
     Rs = cell(total, 1);
     As = A; 
     Rs{1} = A;
+    
+    if ~isfield(param, 'is_zero_mask_of_missing') 
+        param.is_zero_mask_of_missing = true;
+        mask = A==0;
+    end
     
     % Parameters Setting.
     
@@ -131,7 +138,15 @@ function [Ws, Hs, iter,As] = boostCF(A, param, social_matrix)
         %% Try to use SparseNM
         % profile on  
         param.r = dim;
-        [W, H, objective] = sparse_nmf(As, param);
+%         if dim > 3
+        if true
+            [W, H, objective] = sparse_nmf(As, param);
+        else
+            [W, H, is_success] = boostNMF(As, dim, param);
+            if ~is_success
+                break;
+            end
+        end
         % profile viewer/
         % p = profile('info')
         % s = profile('status')
@@ -154,7 +169,11 @@ function [Ws, Hs, iter,As] = boostCF(A, param, social_matrix)
 %             [Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*Rs{iter},0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
 
             % update residual matrix 
-            Rs{iter+1} = update_res_matrix(Rs{iter}, Ws{iter},Hs{iter}); 
+            if param.is_zero_mask_of_missing
+                Rs{iter+1} = update_res_matrix(Rs{iter}, Ws{iter},Hs{iter}, mask); 
+            else
+                Rs{iter+1} = update_res_matrix(Rs{iter}, Ws{iter},Hs{iter});
+            end
 %             figure
 %             imagesc(Rs{iter+1});
 %             hold off
@@ -164,7 +183,8 @@ function [Ws, Hs, iter,As] = boostCF(A, param, social_matrix)
             fprintf("Round [%d]: Unexplained part: %f, Percentage %f%%\n", ...
                 iter, full(unexplained), percentage * 100);
             if isfield(param,'exitAtDeltaPercentage')
-                if (unexplained_last - unexplained)/Original_unexplained < param.exitAtDeltaPercentage
+                if (unexplained_last - unexplained)/Original_unexplained < param.exitAtDeltaPercentage ||...
+                          unexplained/Original_unexplained < param.exitAtDeltaPercentage
                     break;
                 end
             end
@@ -201,9 +221,12 @@ function [newA] = update(A, Dr, Dc)
 end
 
 %%
-function [newA] = update_res_matrix(A, W, H)
-
+function [newA] = update_res_matrix(A, W, H, mask)
+    
     newA = A - W*H;         % get residual matrix   
+    if exist('mask','var')
+         newA(mask) = 0;
+    end
     newA (newA<0) = 0;      % set any negative element to zero
 
 end

@@ -1,4 +1,4 @@
-function [W, H, iter, grad] = boostNMF(A, dim, params)
+function [W, H, is_success, iter, grad] = boostNMF(A, dim, params)
 %%NMFSH_COMB_RANK2
 % Input parameters
 % A: m*n data matrix
@@ -49,9 +49,20 @@ else
     beta = 0;
 end
 
+if ~isfield(params, 'is_zero_mask_of_missing') 
+    is_zero_mask_of_missing = true;
+else
+    is_zero_mask_of_missing = params.is_zero_mask_of_missing;
+end
+
 %===================================================
 %% 
 [W,H] = initialization(A, dim);
+is_success = true;
+
+
+
+
 left = H * H';
 right = A * H';
 
@@ -60,13 +71,20 @@ if rank(left) < dim
     left = H * H';
     right = A * H';
 end
-    
-if dim >= 3
-    param_sparse = [-1 beta];
-    [W, H, iter] = nmfsh_comb(A, dim, param_sparse);
-    grad = 0;
-    return;
+
+
+if is_zero_mask_of_missing
+    mask = A==0;
+    A_approximate = W * H;
+    A(mask) = A_approximate(mask);
 end
+    
+% if dim >= 3
+%     param_sparse = [-1 beta];
+%     [W, H, iter] = nmfsh_comb(A, dim, param_sparse);
+%     grad = 0;
+%     return;
+% end
 
 
 for iter = 1 : max_iter
@@ -84,11 +102,20 @@ for iter = 1 : max_iter
     
     norms_W = sqrt(sum(W.^2));
 	if min(norms_W) < eps
-		error('Error: Some column of W is essentially zero');
+% 		error('Error: Some column of W is essentially zero');
+        is_success = false;
+        return;
 	end
     
 % 	W = W ./ norms_W;
     W = bsxfun(@times, W, 1./norms_W);
+    
+    
+    if is_zero_mask_of_missing
+        mask = A==0;
+        A_approximate = W * H;
+        A(mask) = A_approximate(mask);
+    end
     
 	left = W' * W;
 	right = A' * W;
@@ -115,6 +142,11 @@ for iter = 1 : max_iter
     H(H<0) = 0;
     gradH = left * H - right';
     
+    if is_zero_mask_of_missing
+        mask = A==0;
+        A_approximate = W * H;
+        A(mask) = A_approximate(mask);
+    end
     
 	left = H * H';
 	right = A * H';

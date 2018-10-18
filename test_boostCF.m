@@ -81,7 +81,7 @@ for numOfLoop=1:loop
         %% Decide dataset
         
         if(choice==1)                                                               
-            dataname = 'filmtrust';
+            dataname = 'filmtrust_BoostMF';
             try
                 load filmtrust;
             catch
@@ -208,16 +208,16 @@ for numOfLoop=1:loop
         
 
       %% weak ortho NMF (3rd method)
-
-        mcnt = mcnt + 1; mname{mcnt} = 'OrthoNMF' 
-
-        Winit=rand(size(target_R,1),total_topic); % create a matrix the size of 'size(A,1) x k_std' as W
-        Winit=Winit./repmat(sqrt(sum(Winit.^2,1)),size(target_R,1),1);  % normalize
-        Hinit=rand(total_topic,size(target_R,2)); % create a matrix the size of 'k_std x size(A,1)' as H
-
-        tic
-        [V{mcnt},U{mcnt}]=weakorthonmf(target_R,rand(size(target_R,1),total_topic),rand(total_topic,size(target_R,2)),total_topic,1e-8)
-        speed{mcnt} = toc;
+% 
+%         mcnt = mcnt + 1; mname{mcnt} = 'OrthoNMF' 
+% 
+%         Winit=rand(size(target_R,1),total_topic); % create a matrix the size of 'size(A,1) x k_std' as W
+%         Winit=Winit./repmat(sqrt(sum(Winit.^2,1)),size(target_R,1),1);  % normalize
+%         Hinit=rand(total_topic,size(target_R,2)); % create a matrix the size of 'k_std x size(A,1)' as H
+% 
+%         tic
+%         [V{mcnt},U{mcnt}]=weakorthonmf(target_R,rand(size(target_R,1),total_topic),rand(total_topic,size(target_R,2)),total_topic,1e-8)
+%         speed{mcnt} = toc;
 
 
       %% LDA (4th method)
