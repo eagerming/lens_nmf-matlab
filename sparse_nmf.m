@@ -161,7 +161,6 @@ if ~isfield(params, 'display')
 end
 
 flr = 1e-9;
-lambda = max(w * h, flr);
 last_cost = Inf;
 objective = struct;
 objective.div = zeros(1,params.max_iter);
@@ -173,12 +172,14 @@ update_h = sum(h_ind);
 update_w = sum(w_ind);
 
 if params.is_zero_mask_of_missing
-	mask = v==0;
-    v(mask) = lambda(mask);
+    lambda = max(mask_result(v, w, h), flr);
+else
+    lambda = max(w * h, flr);
 end
 
 % fprintf(1,'Performing sparse NMF with beta-divergence, beta=%.1f\n',div_beta);
 % tic
+
 for it = 1:params.max_iter
     
     % H updates
@@ -200,14 +201,19 @@ for it = 1:params.max_iter
                 dmh = w(:, h_ind)' * (v .* lambda.^(div_beta - 2));
                 h(h_ind, :) = h(h_ind, :) .* dmh ./ dph;
         end
-        lambda = max(w * h, flr); 
         if params.is_zero_mask_of_missing
-            v(mask) = lambda(mask);
+            lambda = max(mask_result(v, w, h), flr);
+        else
+            lambda = max(w * h, flr);
         end
+
     end
+
     
-    % W updates
+    
+    %% W updates
     if update_w > 0 
+
         switch div_beta
             case 1
                 dpw = bsxfun(@plus,sum(h(w_ind, :), 2)', ...
@@ -229,14 +235,15 @@ for it = 1:params.max_iter
                 dmw = (v .* lambda.^(div_beta - 2)) * h(w_ind, :)' ...
                     + bsxfun(@times, sum(lambda.^(div_beta - 1) * h(w_ind, :)' .* w(:, w_ind)), w(:, w_ind));
                 w(:, w_ind) = w(:,w_ind) .* dmw ./ dpw;
-
         end
         % Normalize the columns of W
         w = bsxfun(@rdivide,w,sqrt(sum(w.^2)));
-        lambda = max(w * h, flr); 
         if params.is_zero_mask_of_missing
-            v(mask) = lambda(mask);
+            lambda = max(mask_result(v, w, h), flr);
+        else
+            lambda = max(w * h, flr);
         end
+
     end
 
     % Compute the objective function
@@ -258,7 +265,7 @@ for it = 1:params.max_iter
     objective.cost(it) = cost;
     
     if params.display ~= 0
-        fprintf('iteration %d div = %.3e cost = %.3e\n', it, div, cost);
+        fprintf('iteration %d div = %.3e cost = %.3e\n', it, full(div), full(cost));
     end
     
     % Convergence check

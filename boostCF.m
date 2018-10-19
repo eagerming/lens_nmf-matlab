@@ -177,13 +177,13 @@ function [Ws, Hs, iter,As] = boostCF(A, param, social_matrix)
 %             figure
 %             imagesc(Rs{iter+1});
 %             hold off
-            unexplained = sum(sum(Rs{iter + 1}));
+            unexplained = sum(sum(abs(Rs{iter + 1})));
             percentage = unexplained/Original_unexplained;
             
             fprintf("Round [%d]: Unexplained part: %f, Percentage %f%%\n", ...
                 iter, full(unexplained), percentage * 100);
             if isfield(param,'exitAtDeltaPercentage')
-                if (unexplained_last - unexplained)/Original_unexplained < param.exitAtDeltaPercentage ||...
+                if abs(unexplained_last - unexplained)/Original_unexplained < param.exitAtDeltaPercentage ||...
                           unexplained/Original_unexplained < param.exitAtDeltaPercentage
                     break;
                 end

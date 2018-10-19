@@ -282,7 +282,7 @@ for numOfLoop=1:loop
                     param.beta = beta;
                     param.total = stage;
                     param.dim = dim;
-                    param.isWithSample = false;
+                    param.isWithSample =  false;
                     param.maxiter = 100;
                     param.max_iter = 100;
                     param.fid = fid;
@@ -398,7 +398,7 @@ for numOfLoop=1:loop
         end
         
 %         mcnt = 1:4;
-        topN = 7;
+        topN = 3;
         [TopK_result, TopKindex] = select_good_result(final_result, topN, mcnt);
         
         fields = fieldnames(TopK_result{1});
