@@ -288,10 +288,12 @@ for numOfLoop=1:loop
                     param.fid = fid;
                     param.hasSocial = true;
 
-                    param.display = 0;
+                    param.display = 1;
                     param.cf = 'ed';
                     param.conv_eps = 1e-4;
                     param.sparsity = beta;
+                    
+                    param.learning_rate = 0;
                 
                 % ===================================================
                 

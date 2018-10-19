@@ -94,6 +94,12 @@ end
 if ~isfield(params, 'is_zero_mask_of_missing') 
     params.is_zero_mask_of_missing = true;
 end
+if ~isfield(params, 'learning_rate')
+    learning_rate = 0;
+else
+    learning_rate = params.learning_rate;
+end
+
 
 switch params.cf 
     case 'is'
@@ -129,7 +135,11 @@ else
 end
 
 if ~isfield(params, 'init_h') 
-    h = rand(r, n);
+    if learning_rate == 0
+        h = rand(r, n);
+    else
+        h = zeros(r, n);
+    end
 elseif ischar(params.init_h) && strcmp(params.init_h, 'ones') 
     fprintf('sup_nmf: Initalizing H with ones.\n');
     h = ones(r, n);
@@ -140,7 +150,7 @@ end
 if ~isfield(params, 'w_update_ind') 
     params.w_update_ind = true(r, 1);
 end
-if ~isfield(params, 'h_update_ind') 
+if ~isfield(params, 'h_update_ind')
     params.h_update_ind = true(r, 1);
 end
 
@@ -160,7 +170,9 @@ if ~isfield(params, 'display')
     params.display = 0;
 end
 
-flr = 1e-9;
+FLR = 1e-9;
+flr = -inf;
+% flr = 1e-9;
 last_cost = Inf;
 objective = struct;
 objective.div = zeros(1,params.max_iter);
@@ -188,16 +200,24 @@ for it = 1:params.max_iter
             case 1
                 dph = bsxfun(@plus, sum(w(:, h_ind))', params.sparsity); 
                 dph = max(dph, flr);
+                dph(dph == 0) = FLR;
                 dmh = w(:, h_ind)' * (v ./ lambda);
                 h(h_ind, :) = bsxfun(@rdivide, h(h_ind, :) .* dmh, dph);
             case 2
                 dph = w(:, h_ind)' * lambda + params.sparsity; 
                 dph = max(dph, flr);
+                dph(dph == 0) = FLR;
                 dmh = w(:, h_ind)' * v;
-                h(h_ind, :) = h(h_ind, :) .* dmh ./ dph;
+                if learning_rate ~= 0
+                    fprintf("coefficient = %f", mean(mean(dmh ./ dph)));
+                    h(h_ind, :) = h(h_ind, :) + params.learning_rate * (dmh - dph);
+                else
+                    h(h_ind, :) = h(h_ind, :) .* dmh ./ dph;
+                end
             otherwise
                 dph = w(:, h_ind)' * lambda.^(div_beta - 1) + params.sparsity;
                 dph = max(dph, flr);
+                dph(dph == 0) = FLR;
                 dmh = w(:, h_ind)' * (v .* lambda.^(div_beta - 2));
                 h(h_ind, :) = h(h_ind, :) .* dmh ./ dph;
         end
@@ -220,18 +240,28 @@ for it = 1:params.max_iter
                     bsxfun(@times, ...
                     sum((v ./ lambda) * h(w_ind, :)' .* w(:, w_ind)), w(:, w_ind))); 
                 dpw = max(dpw, flr);
+                dpw(dpw == 0) = FLR;
                 dmw = v ./ lambda * h(w_ind, :)' ...
                     + bsxfun(@times, sum(bsxfun(@times, sum(h(w_ind, :),2)', w(:, w_ind))), w(:, w_ind));
                 w(:, w_ind) = w(:,w_ind) .* dmw ./ dpw;
             case 2
                 dpw = lambda * h(w_ind, :)' ...
-                    + bsxfun(@times, sum(v * h(w_ind, :)' .* w(:, w_ind)), w(:, w_ind)); dpw = max(dpw, flr);
+                    + bsxfun(@times, sum(v * h(w_ind, :)' .* w(:, w_ind)), w(:, w_ind));
+                dpw = max(dpw, flr);
+                dpw(dpw == 0) = FLR;
                 dmw = v * h(w_ind, :)' + bsxfun(@times, sum(lambda * h(w_ind, :)' .* w(:, w_ind)), w(:, w_ind));
-                w(:, w_ind) = w(:,w_ind) .* dmw ./ dpw;
+                if learning_rate ~= 0
+                    fprintf("\tH_coefficient = %f\n", mean(mean(dmw ./ dpw)));
+                    w(:, w_ind) = w(:,w_ind) + params.learning_rate * (dmw - dpw);
+                else
+                    w(:, w_ind) = w(:,w_ind) .* dmw ./ dpw;
+                end
+
             otherwise
                 dpw = lambda.^(div_beta - 1) * h(w_ind, :)' ...
                     + bsxfun(@times, sum((v .* lambda.^(div_beta - 2)) * h(w_ind, :)' .* w(:, w_ind)), w(:, w_ind));
                 dpw = max(dpw, flr);
+                dpw(dpw == 0) = FLR;
                 dmw = (v .* lambda.^(div_beta - 2)) * h(w_ind, :)' ...
                     + bsxfun(@times, sum(lambda.^(div_beta - 1) * h(w_ind, :)' .* w(:, w_ind)), w(:, w_ind));
                 w(:, w_ind) = w(:,w_ind) .* dmw ./ dpw;

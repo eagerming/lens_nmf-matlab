@@ -6,6 +6,9 @@ rng('default'); rng(0);
 ind = randperm(30);
 
 R(ind(1:10)) = 0;
+R(1,:) = -R(1,:);
+R(4,:) = -R(4,:);
+
 
 beta = 0
 dim = 1
@@ -37,5 +40,5 @@ for i=1:length(Ws_wgt)
     U = [U; Hs_wgt{i}];
 end
 
-a = V * U - R;
+a = V(:,:) * U(:,:) - R;
 a(R==0) = 0

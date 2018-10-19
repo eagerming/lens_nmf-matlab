@@ -227,7 +227,7 @@ function [newA] = update_res_matrix(A, W, H, mask)
     if exist('mask','var')
          newA(mask) = 0;
     end
-    newA (newA<0) = 0;      % set any negative element to zero
+%     newA (newA<0) = 0;      % set any negative element to zero
 
 end
 
