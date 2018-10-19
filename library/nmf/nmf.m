@@ -249,65 +249,67 @@ end
 function [W,H,gradW,gradH,val] = anls_bpp_iterSolver(A,W,H,iter,par,val)
 
     if par.is_zero_mask_of_missing
-%         num_row = size(A,1);
-%         num_col = size(A,2);
-        mask = A == 0;
-        A_approximate = W * H;
-        A(mask) = A_approximate(mask);
-        val.WtA = W'*A;
-        val.WtW = W'*W;
+        num_row = size(A,1);
+        num_col = size(A,2);
+%         mask = A == 0;
+%         A_approximate = W * H;
+%         A(mask) = A_approximate(mask);
+%         val.WtA = W'*A;
+%         val.WtW = W'*W;
     end
     
 	
     %% Chongming Gao revise
-%     if par.is_zero_mask_of_missing
-%         for i = 1:num_col
-%             indicate_vec = A(:,i) > 0;
-%             WtW_i = W(indicate_vec,:)' * W(indicate_vec,:);
-%             WtW_reg_i = applyReg(WtW_i,par,par.reg_h);
-%             WtA_i = val.WtA(:,i);
-%             H_i = H(:,i);
-%             [H_i, ~] = nnlsm_blockpivot(WtW_reg_i, WtA_i, 1, H_i);
-%             %% reconstruct
-%             H(:,i) = H_i; 
-%         end
-%         
-%         HAt = H*A';
-%         gradW = zeros(num_row, par.k);
-%         
-%         for j = 1:num_row
-%             indicate_vec = A(j,:) > 0;
-%             HHt_j = H(:, indicate_vec) * H(:, indicate_vec)';
-%             HHt_reg_j = applyReg(HHt_j,par,par.reg_w);
-%             HAt_j = HAt(:,j);
-%             W_j = W(j,:);
-%             [W_j, gradW_j] = nnlsm_blockpivot(HHt_reg_j, HAt_j, 1, W_j');
-%             %% reconstruct
-%             W(j,:) = W_j';
-%             gradW(j,:) = gradW_j';
-%         end
-%     else
-%         WtW_reg = applyReg(val.WtW,par,par.reg_h);
-%         [H,~,suc_H,numChol_H,numEq_H] = nnlsm_blockpivot(WtW_reg,val.WtA,1,H);
-%         
-%         HHt_reg = applyReg(H*H',par,par.reg_w);
-%         [W,gradW,suc_W,numChol_W,numEq_W] = nnlsm_blockpivot(HHt_reg,H*A',1,W');
-%         W = W';
-%         gradW = gradW';
-%     end
-    
-    WtW_reg = applyReg(val.WtW,par,par.reg_h);
-    [H,~,suc_H,numChol_H,numEq_H] = nnlsm_blockpivot(WtW_reg,val.WtA,1,H);
-    HHt_reg = applyReg(H*H',par,par.reg_w);
-    
     if par.is_zero_mask_of_missing
-        A_approximate = W * H;
-        A(mask) = A_approximate(mask);
+        for i = 1:num_col
+            indicate_vec = A(:,i) > 0;
+            WtW_i = W(indicate_vec,:)' * W(indicate_vec,:);
+            WtW_reg_i = applyReg(WtW_i,par,par.reg_h);
+            WtA_i = val.WtA(:,i);
+            H_i = H(:,i);
+            warning off;
+            [H_i, ~] = nnlsm_blockpivot(WtW_reg_i, WtA_i, 1, H_i);
+            %% reconstruct
+            H(:,i) = H_i; 
+        end
+        
+        HAt = H*A';
+        gradW = zeros(num_row, par.k);
+        
+        for j = 1:num_row
+            indicate_vec = A(j,:) > 0;
+            HHt_j = H(:, indicate_vec) * H(:, indicate_vec)';
+            HHt_reg_j = applyReg(HHt_j,par,par.reg_w);
+            HAt_j = HAt(:,j);
+            W_j = W(j,:);
+            warning off;
+            [W_j, gradW_j] = nnlsm_blockpivot(HHt_reg_j, HAt_j, 1, W_j');
+            %% reconstruct
+            W(j,:) = W_j';
+            gradW(j,:) = gradW_j';
+        end
+    else
+        WtW_reg = applyReg(val.WtW,par,par.reg_h);
+        [H,~,suc_H,numChol_H,numEq_H] = nnlsm_blockpivot(WtW_reg,val.WtA,1,H);
+        
+        HHt_reg = applyReg(H*H',par,par.reg_w);
+        [W,gradW,suc_W,numChol_W,numEq_W] = nnlsm_blockpivot(HHt_reg,H*A',1,W');
+        W = W';
+        gradW = gradW';
     end
     
-    [W,gradW,suc_W,numChol_W,numEq_W] = nnlsm_blockpivot(HHt_reg,H*A',1,W');
-    W = W';
-    gradW = gradW';
+%     WtW_reg = applyReg(val.WtW,par,par.reg_h);
+%     [H,~,suc_H,numChol_H,numEq_H] = nnlsm_blockpivot(WtW_reg,val.WtA,1,H);
+%     HHt_reg = applyReg(H*H',par,par.reg_w);
+%     
+%     if par.is_zero_mask_of_missing
+%         A_approximate = W * H;
+%         A(mask) = A_approximate(mask);
+%     end
+%     
+%     [W,gradW,suc_W,numChol_W,numEq_W] = nnlsm_blockpivot(HHt_reg,H*A',1,W');
+%     W = W';
+%     gradW = gradW';
 	
 
 	val.WtA = W'*A;
@@ -317,33 +319,33 @@ function [W,H,gradW,gradH,val] = anls_bpp_iterSolver(A,W,H,iter,par,val)
 	if par.track_grad
 		gradW = gradW;
         
-%         if par.is_zero_mask_of_missing
-%             gradH = zeros(par.k, num_col);
-%             for i = 1:num_col
-%                 indicate_vec = A(:,i) > 0;
-%                 WtW_i = W(indicate_vec,:)' * W(indicate_vec,:);
-%                 WtA_i = val.WtA(:,i);
-%                 H_i = H(:,i);
-%                 gradH_i = getGradientOne(WtW_i, WtA_i, H_i, par.reg_h, par);
-%                 %% reconstruct
-%                 gradH(:,i) = gradH_i;
-%             end
-%         else
-%             gradH = getGradientOne(val.WtW,val.WtA,H,par.reg_h,par);
-%         end
+        if par.is_zero_mask_of_missing
+            gradH = zeros(par.k, num_col);
+            for i = 1:num_col
+                indicate_vec = A(:,i) > 0;
+                WtW_i = W(indicate_vec,:)' * W(indicate_vec,:);
+                WtA_i = val.WtA(:,i);
+                H_i = H(:,i);
+                gradH_i = getGradientOne(WtW_i, WtA_i, H_i, par.reg_h, par);
+                %% reconstruct
+                gradH(:,i) = gradH_i;
+            end
+        else
+            gradH = getGradientOne(val.WtW,val.WtA,H,par.reg_h,par);
+        end
         
-        gradH = getGradientOne(val.WtW,val.WtA,H,par.reg_h,par);
+%         gradH = getGradientOne(val.WtW,val.WtA,H,par.reg_h,par);
 	else
 		gradW = 0;gradH =0;
     end
     
-
-	val(1).numChol_W = numChol_W;
-	val.numChol_H = numChol_H;
-	val.numEq_W = numEq_W;
-	val.numEq_H = numEq_H;
-	val.suc_W = suc_W;
-	val.suc_H = suc_H;
+% 
+% 	val(1).numChol_W = numChol_W;
+% 	val.numChol_H = numChol_H;
+% 	val.numEq_W = numEq_W;
+% 	val.numEq_H = numEq_H;
+% 	val.suc_W = suc_W;
+% 	val.suc_H = suc_H;
 end
 
 function [ver] = anls_bpp_iterLogger(ver,par,val,W,H,prev_W,prev_H)
