@@ -9,7 +9,7 @@ function H = sparse_rank2_LS(left, right)
 % Compute the least square problem with coefficient matrix and solution
 % matrix being rank two.
 
-% Solve min_H ||(A' - H' * W')||^2 + , given A and W.
+% Solve min_H ||(A' - H' * W')||^2, given A and W.
 % left = W' * W;
 % right = A' * W;
 % Usage 1: H = anls_entry_rank2_precompute(left, right, H')';

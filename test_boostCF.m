@@ -50,6 +50,7 @@ addpath('./library/nmf');
 addpath('./library/lens_nmf');
 addpath('./library/ramkis');
 addpath('./library/topictoolbox');
+addpath('./library/L1Solvers');
 
 % add path to dataset folder
 addpath('./data');
@@ -105,7 +106,7 @@ for numOfLoop=1:loop
         
         
         dim = 2;   % number of topics per stage in L-EnsNMF
-        stage = 8; % number of stages in L-EnsNMF
+        stage = 10; % number of stages in L-EnsNMF
         total_topic = dim * stage; % number of total topics
         beta = 0.4;
 
@@ -258,50 +259,48 @@ for numOfLoop=1:loop
       %% BoostCF (5th method)
 
       % =========================================================
-        num_beta = 5;
-        beta_list = linspace(0, 0.8, num_beta);
-        dim_list = 1:3;
-        alpha_list = [0 0.3 0.5 0.8];
         
+        dim_list = 1:4;
+        lambda_list = [0 0.01 0.1];
+        lambda_social_list = [0 0.01 0.1 0.2];
         
-        stage = 1000;
       % =========================================================
         
         for ind_dim = 1:length(dim_list)
-            for ind_beta = 1:num_beta
-                for ind_alpha = 1:length(alpha_list)
+            for ind_lambda = 1:length(lambda_list)
+                for ind_social = 1:length(lambda_social_list)
 
                 % ===================================================
-                    beta = beta_list(ind_beta);
                     dim = dim_list(ind_dim);
-                    alpha = alpha_list(ind_alpha);
+                    lambda_social = lambda_social_list(ind_social);
+                    lambda_item = 0;
+                    lambda = lambda_list(ind_lambda);
+
                     mcnt = mcnt + 1;
-
-                    param.exitAtDeltaPercentage = 1e-4;
-                    param.alpha = alpha;
-                    param.beta = beta;
-                    param.total = stage;
-                    param.dim = dim;
-                    param.isWithSample =  false;
-                    param.maxiter = 100;
-                    param.max_iter = 100;
+                    
+                    param.dim = dim;    
+                    param.total = 1000;
+                    param.max_iter = 300;
                     param.fid = fid;
-                    param.hasSocial = true;
+                    param.exitAtDeltaPercentage = 1e-3;
 
-                    param.display = 1;
-                    param.cf = 'ed';
-                    param.conv_eps = 1e-4;
-                    param.sparsity = beta;
+                    param.lambda = lambda;
+                    param.lambda_social = lambda_social;
+                    param.lambda_item = lambda_item;
+                    
+                    param.isWithSample =  true;
+                    param.sampleThreshold = 100;
+                    param.similarity_threshold = 0.5;
+                    
                     
                     param.learning_rate = 0;
-                
+                    param.is_zero_mask_of_missing = true;
+
                 % ===================================================
-                
-                    mname{mcnt} = sprintf('BoostCF, beta=%.2f, dim=%d, alpha=%.1f', beta, dim, alpha);
-                    fprintf('BoostCF #[%d], beta=%.2f, dim=%d, alpha=%.2f\n',mcnt, beta, dim, alpha);
-                    fprintf(fid, 'BoostCF #[%d], beta=%.2f, dim=%d, alpha=%.2f\n',mcnt, beta, dim, alpha);
 
-
+                    mname{mcnt} = sprintf('BoostCF, dim=%d, l=%.2f, ls=%.2f, li=%.2f', dim, lambda, lambda_social, lambda_item);
+                    fprintf('BoostCF #[%d]\n',mcnt);
+    %                 fprintf(fid, 'BoostCF #[%d], beta=%.2f, dim=%d, alpha=%.2f\n',mcnt, beta, dim, alpha);
                     tic;
                     [Ws_wgt, Hs_wgt] = boostCF(target_R, param);
                     speed{mcnt} = toc;
