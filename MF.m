@@ -134,13 +134,14 @@ end
 col_ind = sum(abs(R),1) > 0.1;
 row_ind = sum(abs(R),2) > 0.1;
 
-if isempty(col_ind) || isempty(row_ind)
+if sum(col_ind) < 1 || sum(row_ind) < 1
     W_return = zeros(size(R,1),dim);
-    H_return = zeros(size(R,1),dim);
+    H_return = zeros(dim, size(R,2));
     iter = 0; 
     cost = 0;
     return;
 end
+
 
 R_original = R;
 W_return = zeros(size(R_original,1), dim);
