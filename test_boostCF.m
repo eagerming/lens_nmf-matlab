@@ -109,7 +109,12 @@ for numOfLoop=1:loop
             has_trust = true;
             has_itemfeature = true;
         end
-        
+        if has_trust
+            social_matrix = (social_matrix + social_matrix')/2;
+        end
+        if has_itemfeature
+            item_matrix = (item_matrix + item_matrix')/2;
+        end
         log_name = dataname;
         [fid, fidpath] = create_new_log(log_name);
             
