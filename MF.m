@@ -133,6 +133,15 @@ end
 
 col_ind = sum(abs(R),1) > 0.1;
 row_ind = sum(abs(R),2) > 0.1;
+
+if isempty(col_ind) || isempty(row_ind)
+    W_return = zeros(size(R,1),dim);
+    H_return = zeros(size(R,1),dim);
+    iter = 0; 
+    cost = 0;
+    return;
+end
+
 R_original = R;
 W_return = zeros(size(R_original,1), dim);
 H_return = zeros(dim, size(R_original,2));
@@ -148,7 +157,7 @@ n = size(R, 2);
 
 %% 
 if params.random_seed > 0 
-%     rng('default');
+    rng('default');
     rng(params.random_seed);
 end
 W = rand(m, dim);
@@ -168,7 +177,7 @@ end
 
 FLR = 1e-9;
 % flr = -inf;
-last_cost = Inf;
+% last_cost = Inf;
 
 
 if params.is_zero_mask_of_missing
