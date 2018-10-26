@@ -85,9 +85,6 @@ end
 
 
 
-
-
-
 function [NDCGK] = NDCGatK(pos_y, y)
 % y: the real world score.
 % pos_y: The corresponding position of score y in the recommendation order.

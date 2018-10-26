@@ -82,20 +82,32 @@ for numOfLoop=1:loop
         %% Decide dataset
         
         if(choice==1)                                                               
-            dataname = 'filmtrust_BoostMF';
+            dataname = 'filmtrust';
             try
                 load filmtrust;
             catch
                 rating_filePath = 'data/filmtrust/rating/ratings.txt';
                 trust_filePath = 'data/filmtrust/trust/trust.txt';
-                [R,S,map] = loadData(rating_filePath, trust_filePath, dataname);
+                [R,social_matrix,map] = loadData(rating_filePath, trust_filePath, dataname);
                 clear rating_filePath trust_filePath;
             end
             has_trust = true;
             has_itemfeature = false;
+            
         elseif(choice==2)
-            load enron_tdm_n2000;
-            has_dict = 1;
+            dataname = 'gowalla';
+            try
+                load gowalla;
+            catch
+                rating_filePath = 'data/gowalla/Rating_gowalla.txt';
+                trust_filePath = 'data/gowalla/user_network.txt';
+                item_network_filePath = 'data/gowalla/item_network.txt';
+                
+                [R,social_matrix,map, item_matrix] = loadData(rating_filePath, trust_filePath, dataname, item_network_filePath);
+                clear rating_filePath trust_filePath item_network_filePath;
+            end
+            has_trust = true;
+            has_itemfeature = true;
         end
         
         log_name = dataname;
@@ -172,7 +184,11 @@ for numOfLoop=1:loop
                 title_new{i} = strtrim(titles{i}(2,:));
             end
         end
-
+        
+        %% Random (1st method)
+        mcnt = mcnt + 1; mname{mcnt} = 'Random'
+        V{mcnt} = rand(size(target_R,1), 2);
+        U{mcnt} = rand(2, size(target_R,2));
         
         %% standard NMF (1st method)
         mcnt = mcnt + 1; mname{mcnt} = 'StandardNMF'
@@ -298,6 +314,12 @@ for numOfLoop=1:loop
 
                         param.learning_rate = 0;
                         param.is_zero_mask_of_missing = true;
+                        if has_trust
+                            param.social_matrix = social_matrix;
+                        end
+                        if has_itemfeature
+                            param.item_matrix = item_matrix;
+                        end
 
                     % ===================================================
 
@@ -399,7 +421,7 @@ for numOfLoop=1:loop
         mcnt = length(V);
         K_list = 1:30;
         for i = 1:mcnt
-            final_result{i} = evaluation(V{i}, U{i}, test_matrix, K_list);
+            [final_result{i}, MAE{i}, RMSE{i}] = evaluation(V{i}, U{i}, test_matrix, K_list);
         end
         
 %         mcnt = 1:4;

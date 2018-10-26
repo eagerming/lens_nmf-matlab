@@ -122,11 +122,13 @@ end
 if lambda_social > 0 && isfield(params, 'social_matrix')
 	social_matrix = params.social_matrix;
 else
+    lambda_social = 0;
     social_matrix = sparse(eye(size(R,2)));
 end
 if lambda_item > 0 && isfield(params, 'item_matrix')
 	item_matrix = params.item_matrix;
 else
+    lambda_item = 0;
     item_matrix = sparse(eye(size(R,1)));
 end
 %%
