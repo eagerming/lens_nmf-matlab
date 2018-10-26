@@ -1,10 +1,10 @@
 u = [1 3 5 7 9; 2 4 6 8 10];
 v =  [1 2 3 4 5 6; 6 5 4 3 2 1]';
-R = v* u;
+R = v * u;
 rng('default'); rng(0); 
 
 R(1,:) = -R(1,:);
-R(4,:) = -R(4,:);
+R(:,4) = -R(:,4);
 R_ori = R;
 
 ind = randperm(30);
@@ -21,11 +21,12 @@ param.exitAtDeltaPercentage = 1e-4;
 
 param.total = stage;
 param.dim = dim;
-param.isWithSample =  true;
-param.max_iter = 300;
-param.lambda = 0.01;
+param.isWithSample =  false;
+param.max_iter = 100;
+param.lambda = 0;
 param.lambda_social = 0;
 param.lambda_item = param.lambda_social;
+param.display=0;
 
 param.similarity_threshold = 0.5;
 

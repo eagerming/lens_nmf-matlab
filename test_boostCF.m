@@ -261,8 +261,8 @@ for numOfLoop=1:loop
       % =========================================================
         
         dim_list = 1:4;
-        lambda_list = [0 0.01 0.1];
-        lambda_social_list = [0 0.01 0.1 0.2];
+        lambda_list = [0 0.01 0.1 0.5];
+        lambda_social_list = [0 0.1 0.5];
         
       % =========================================================
         
@@ -279,8 +279,8 @@ for numOfLoop=1:loop
                     mcnt = mcnt + 1;
                     
                     param.dim = dim;    
-                    param.total = 1000;
-                    param.max_iter = 300;
+                    param.total = 50;
+                    param.max_iter = 10;
                     param.fid = fid;
                     param.exitAtDeltaPercentage = 1e-3;
 
@@ -288,10 +288,10 @@ for numOfLoop=1:loop
                     param.lambda_social = lambda_social;
                     param.lambda_item = lambda_item;
                     
-                    param.isWithSample =  true;
-                    param.sampleThreshold = 100;
+                    param.isWithSample =  false;
+                    param.sampleThreshold = 1000;
                     param.similarity_threshold = 0.5;
-                    
+                    param.display = 0;
                     
                     param.learning_rate = 0;
                     param.is_zero_mask_of_missing = true;

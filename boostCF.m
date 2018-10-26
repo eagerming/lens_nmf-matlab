@@ -148,6 +148,9 @@ function [Ws, Hs, iter,As] = boostCF(A, params, social_matrix)
             
             
             [As, subsize_row, subsize_col] = sample_RowandCol(As, A_cossim_row, A_cossim_col, params.similarity_threshold, sampleThreshold);
+        else
+            subsize_row = size(A,1);
+            subsize_col = size(A,2);
         end
 
 
@@ -156,22 +159,23 @@ function [Ws, Hs, iter,As] = boostCF(A, params, social_matrix)
         
         %% Try to use SparseNM
         % profile on  
-        params.r = dim;
+        
 %         if dim > 3
         
-        dim_now = dim;
-        while true
-            [W, H, isSuccess, iteration] = boostNMF(As, dim_now, params);
-            if isSuccess
-                break
-            end
-            dim_now = dim_now - 1;
-        end
+%         dim_now = dim;
+%         while true
+%             [W, H, isSuccess, iteration] = boostNMF(As, dim_now, params);
+%             if isSuccess
+%                 break
+%             end
+%             dim_now = dim_now - 1;
+%         end
 
 %         params.r = dim;
 %         params.cf = 'ed';
 %         [W, H] = sparse_nmf(As, params);
-        
+
+        [W, H, iteration] = MF(As, dim, params);
         
         % profile viewer/
         % p = profile('info')

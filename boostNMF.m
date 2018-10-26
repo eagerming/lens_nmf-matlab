@@ -64,8 +64,6 @@ else
     lambda_item = 0;
 end
 
-
-
 if lambda_social > 0 && isfield(params, 'social_matrix')
 	social_matrix = params.social_matrix;
 else
@@ -158,14 +156,14 @@ for iter = 1 : max_iter
         W(i,:) = W_i;
     end
     
-%     norms_W = sqrt(sum(W.^2));
-%     if min(norms_W) < eps
-% 		error('Error: Some column of W is essentially zero');
-% %         is_success = false;
-% %         return;
-%     end
-%     W = bsxfun(@times, W, 1./norms_W);
-%     H  = bsxfun(@times, H, norms_W');
+    norms_W = sqrt(sum(W.^2));
+    if min(norms_W) < eps
+		error('Error: Some column of W is essentially zero');
+%         is_success = false;
+%         return;
+    end
+    W = bsxfun(@times, W, 1./norms_W);
+    H  = bsxfun(@times, H, norms_W');
     
 %     if params.is_zero_mask_of_missing
 %         L = mask_result(R, W, H);

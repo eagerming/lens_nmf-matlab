@@ -1,5 +1,5 @@
-VV = V{3};
-UU = U{3} ;
+VV = V{4};
+UU = U{4} ;
 
 C = zeros(size(VV,2),1);
 for kk = 1:size(VV,2)
@@ -27,7 +27,7 @@ for kk = 1:size(VV,2)
         b = RR(ii(k), jj(k));
         c = c + (a - b)^2;
     end
-    C(kk) = c;
+    C(kk) = sqrt(c);
 end
 C
 %% 
