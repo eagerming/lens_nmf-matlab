@@ -1,0 +1,2 @@
+dim=[1], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 10265.509333, Percentage 12.058344%, delta%=0.000000

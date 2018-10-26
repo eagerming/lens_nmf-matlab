@@ -85,6 +85,7 @@ for numOfLoop=1:loop
             dataname = 'filmtrust';
             try
                 load filmtrust;
+                social_matrix = S;
             catch
                 rating_filePath = 'data/filmtrust/rating/ratings.txt';
                 trust_filePath = 'data/filmtrust/trust/trust.txt';

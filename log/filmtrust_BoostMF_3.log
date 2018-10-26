@@ -1,0 +1,234 @@
+dim=[1], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 14028.662522, Percentage 16.478718%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 11452.105919, Percentage 13.452175%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 4585.541014, Percentage 5.386389%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1849.641006, Percentage 2.172674%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1653.909893, Percentage 1.942759%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1562.523387, Percentage 1.835413%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 11337.369425, Percentage 13.317401%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 14522.188608, Percentage 17.058437%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 4052.644085, Percentage 4.760424%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2851.842783, Percentage 3.349907%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1888.644671, Percentage 2.218490%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1888.644671, Percentage 2.218490%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 13521.573203, Percentage 15.883068%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 11873.798328, Percentage 13.947515%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 6926.415821, Percentage 8.136090%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 5026.072016, Percentage 5.903858%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 4837.015919, Percentage 5.681783%, delta%=0.000000
+dim=[1], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 4410.808217, Percentage 5.181140%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 17744.961137, Percentage 20.844055%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 11637.505804, Percentage 13.669955%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 4223.949524, Percentage 4.961647%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2445.134592, Percentage 2.872169%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2307.796377, Percentage 2.710845%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1998.948487, Percentage 2.348058%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 17744.981601, Percentage 20.844079%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 13786.638613, Percentage 16.194426%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2882.807540, Percentage 3.386280%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2613.282395, Percentage 3.069683%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2317.022512, Percentage 2.721682%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2359.551269, Percentage 2.771638%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 19615.243046, Percentage 23.040975%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 13826.941437, Percentage 16.241767%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 4800.604486, Percentage 5.639013%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 3190.867990, Percentage 3.748142%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2325.565201, Percentage 2.731717%, delta%=0.000000
+dim=[1], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2325.565201, Percentage 2.731717%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 19478.855341, Percentage 22.880768%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 16855.241648, Percentage 19.798949%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 10088.341146, Percentage 11.850234%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 8813.825094, Percentage 10.353128%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 7345.004186, Percentage 8.627783%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 6392.871325, Percentage 7.509363%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 19265.774079, Percentage 22.630473%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 11435.756169, Percentage 13.432970%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 10597.881576, Percentage 12.448764%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 10027.892516, Percentage 11.779228%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 6765.093599, Percentage 7.946593%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 6589.766054, Percentage 7.740645%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 27010.403688, Percentage 31.727674%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 19071.635812, Percentage 22.402429%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 9663.043879, Percentage 11.350660%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 8657.384640, Percentage 10.169366%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 7157.923476, Percentage 8.408029%, delta%=0.000000
+dim=[1], lambda=[0.10], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 6835.840193, Percentage 8.029695%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 30022.874264, Percentage 35.266262%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 24121.327331, Percentage 28.334031%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 19071.264987, Percentage 22.401993%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 17830.833319, Percentage 20.944925%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 16615.966664, Percentage 19.517886%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 15105.911853, Percentage 17.744105%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 28069.697050, Percentage 32.971969%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 26883.034794, Percentage 31.578061%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 21220.403681, Percentage 24.926471%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 18175.700552, Percentage 21.350022%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 17259.598128, Percentage 20.273925%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 15774.281274, Percentage 18.529203%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 28069.697461, Percentage 32.971970%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 26175.087003, Percentage 30.746473%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 20628.110527, Percentage 24.230736%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 18059.726165, Percentage 21.213793%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 16247.139304, Percentage 19.084644%, delta%=0.000000
+dim=[1], lambda=[0.50], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 15785.380075, Percentage 18.542240%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 11119.464649, Percentage 13.061439%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 7772.861766, Percentage 9.130364%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 3793.284589, Percentage 4.455768%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 3393.884708, Percentage 3.986615%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2507.727708, Percentage 2.945693%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2037.423682, Percentage 2.393252%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 10543.311561, Percentage 12.384663%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 8319.342811, Percentage 9.772286%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1749.751089, Percentage 2.055339%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 896.916593, Percentage 1.053560%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 611.913519, Percentage 0.718782%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 611.913519, Percentage 0.718782%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 11800.014305, Percentage 13.860845%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 11022.313347, Percentage 12.947321%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 4172.610511, Percentage 4.901342%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2662.447956, Percentage 3.127435%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2006.376214, Percentage 2.356783%, delta%=0.000000
+dim=[2], lambda=[0.00], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2006.376214, Percentage 2.356783%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 11053.590642, Percentage 12.984061%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 8778.567488, Percentage 10.311713%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 4194.161817, Percentage 4.926657%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2279.795032, Percentage 2.677953%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1491.034356, Percentage 1.751438%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1671.905793, Percentage 1.963898%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 21824.578337, Percentage 25.636163%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 8695.375299, Percentage 10.213992%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1274.966511, Percentage 1.497635%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 782.947592, Percentage 0.919687%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 647.818313, Percentage 0.760957%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 613.177071, Percentage 0.720266%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 14800.353944, Percentage 17.385183%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 8361.678700, Percentage 9.822016%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1597.220201, Percentage 1.876169%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 1061.079754, Percentage 1.246394%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 976.150930, Percentage 1.146632%, delta%=0.000000
+dim=[2], lambda=[0.01], lambda_social=[0.50], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 885.854191, Percentage 1.040565%, delta%=0.000000
+dim=[2], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 25305.999164, Percentage 29.725602%, delta%=0.000000
+dim=[2], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 8139.171423, Percentage 9.560649%, delta%=0.000000
+dim=[2], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 3430.196325, Percentage 4.029268%, delta%=0.000000
+dim=[2], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2494.942624, Percentage 2.930675%, delta%=0.000000
+dim=[2], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 3119.233251, Percentage 3.663996%, delta%=0.000000
+dim=[2], lambda=[0.10], lambda_social=[0.00], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 2237.146986, Percentage 2.627857%, delta%=0.000000
+dim=[2], lambda=[0.10], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 16871.744552, Percentage 19.818335%, delta%=0.000000
+dim=[2], lambda=[0.10], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 10340.791730, Percentage 12.146774%, delta%=0.000000
+dim=[2], lambda=[0.10], lambda_social=[0.10], lambda_item=[0.00]
+Terminate at Round [50]: Unexplained part: 5184.596997, Percentage 6.090068%, delta%=0.000000
