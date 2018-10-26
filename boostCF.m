@@ -212,12 +212,12 @@ function [Ws, Hs, iter,As] = boostCF(A, params, social_matrix)
             
             fprintf("Round[%d]: Size[%d×%d], Iteration[%d], Unexplained part[%f], Percentage[%f]%%\n", ...
                 iter, full(subsize_row), full(subsize_col), iteration, full(unexplained), full(percentage) * 100);
-            if isfield(params,'exitAtDeltaPercentage')
-                if abs(unexplained_last - unexplained)/Original_unexplained < params.exitAtDeltaPercentage ||...
-                          unexplained/Original_unexplained < params.exitAtDeltaPercentage
-                    break;
-                end
-            end
+%             if isfield(params,'exitAtDeltaPercentage')
+%                 if abs(unexplained_last - unexplained)/Original_unexplained < params.exitAtDeltaPercentage ||...
+%                           unexplained/Original_unexplained < params.exitAtDeltaPercentage
+%                     break;
+%                 end
+%             end
             
             unexplained_last = unexplained;
             

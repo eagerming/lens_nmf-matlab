@@ -263,52 +263,56 @@ for numOfLoop=1:loop
         dim_list = 1:4;
         lambda_list = [0 0.01 0.1 0.5];
         lambda_social_list = [0 0.1 0.5];
+        sample_list = [0.2 0.3 0.5 0.6];
         
       % =========================================================
         
         for ind_dim = 1:length(dim_list)
             for ind_lambda = 1:length(lambda_list)
                 for ind_social = 1:length(lambda_social_list)
+                    for ind_sample = 1:length(sample_list)
 
-                % ===================================================
-                    dim = dim_list(ind_dim);
-                    lambda_social = lambda_social_list(ind_social);
-                    lambda_item = 0;
-                    lambda = lambda_list(ind_lambda);
+                    % ===================================================
+                        dim = dim_list(ind_dim);
+                        lambda_social = lambda_social_list(ind_social);
+                        lambda_item = 0;
+                        lambda = lambda_list(ind_lambda);
+                        sample_threshold = sample_list(ind_sample);
+                        
+                        mcnt = mcnt + 1;
 
-                    mcnt = mcnt + 1;
-                    
-                    param.dim = dim;    
-                    param.total = 50;
-                    param.max_iter = 10;
-                    param.fid = fid;
-                    param.exitAtDeltaPercentage = 1e-3;
+                        param.dim = dim;    
+                        param.total = 50;
+                        param.max_iter = 100;
+                        param.fid = fid;
+                        param.exitAtDeltaPercentage = 1e-4;
 
-                    param.lambda = lambda;
-                    param.lambda_social = lambda_social;
-                    param.lambda_item = lambda_item;
-                    
-                    param.isWithSample =  false;
-                    param.sampleThreshold = 1000;
-                    param.similarity_threshold = 0.5;
-                    param.display = 0;
-                    
-                    param.learning_rate = 0;
-                    param.is_zero_mask_of_missing = true;
+                        param.lambda = lambda;
+                        param.lambda_social = lambda_social;
+                        param.lambda_item = lambda_item;
 
-                % ===================================================
+                        param.isWithSample =  true;
+                        param.sampleThreshold = 3;
+                        param.similarity_threshold = sample_threshold;
+                        param.display = 0;
 
-                    mname{mcnt} = sprintf('BoostCF, dim=%d, l=%.2f, ls=%.2f, li=%.2f', dim, lambda, lambda_social, lambda_item);
-                    fprintf('BoostCF #[%d]\n',mcnt);
-    %                 fprintf(fid, 'BoostCF #[%d], beta=%.2f, dim=%d, alpha=%.2f\n',mcnt, beta, dim, alpha);
-                    tic;
-                    [Ws_wgt, Hs_wgt] = boostCF(target_R, param);
-                    speed{mcnt} = toc;
+                        param.learning_rate = 0;
+                        param.is_zero_mask_of_missing = true;
 
-                    V{mcnt} = []; U{mcnt} = [];
-                    for i=1:length(Ws_wgt)
-                        V{mcnt} = [V{mcnt} Ws_wgt{i}];
-                        U{mcnt} = [U{mcnt}; Hs_wgt{i}];
+                    % ===================================================
+
+                        mname{mcnt} = sprintf('BoostCF, dim=%d, l=%.2f, ls=%.2f, li=%.2f', dim, lambda, lambda_social, lambda_item);
+                        fprintf('BoostCF #[%d]\n',mcnt);
+        %                 fprintf(fid, 'BoostCF #[%d], beta=%.2f, dim=%d, alpha=%.2f\n',mcnt, beta, dim, alpha);
+                        tic;
+                        [Ws_wgt, Hs_wgt] = boostCF(target_R, param);
+                        speed{mcnt} = toc;
+
+                        V{mcnt} = []; U{mcnt} = [];
+                        for i=1:length(Ws_wgt)
+                            V{mcnt} = [V{mcnt} Ws_wgt{i}];
+                            U{mcnt} = [U{mcnt}; Hs_wgt{i}];
+                        end
                     end
                 end
             end

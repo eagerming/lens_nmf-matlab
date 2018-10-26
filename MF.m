@@ -148,7 +148,7 @@ n = size(R, 2);
 
 %% 
 if params.random_seed > 0 
-    rng('default');
+%     rng('default');
     rng(params.random_seed);
 end
 W = rand(m, dim);
@@ -172,7 +172,7 @@ last_cost = Inf;
 
 
 if params.is_zero_mask_of_missing
-    WH = mask_result(R, W, H);
+    WH = mask_result(mask, W, H);
 else
     WH = W * H;
 end
@@ -195,7 +195,7 @@ for iter = 1:params.max_iter
     end
     
     if params.is_zero_mask_of_missing
-        WH = mask_result(R, W, H);
+        WH = mask_result(mask, W, H);
     else
         WH = W * H;
     end
