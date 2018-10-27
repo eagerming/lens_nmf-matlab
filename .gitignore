@@ -1,6 +1,3 @@
 
 *.m~
 *.mat
-data/gowalla/user_network.txt
-data/gowalla/Rating_gowalla.txt
-data/gowalla/item_network.txt

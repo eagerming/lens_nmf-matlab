@@ -53,7 +53,7 @@
 % [Ws, Hs, Drs, Dcs, As] = lens_nmf(A, k, topk, iter); 
 
 
-function [Ws, Hs, iter,As] = boostCF(A, params, social_matrix)
+function [Ws, Hs, iter,As] = boostCF(A, params)
     
     if ~isfield(params, 'is_zero_mask_of_missing') 
         params.is_zero_mask_of_missing = true;
@@ -64,7 +64,7 @@ function [Ws, Hs, iter,As] = boostCF(A, params, social_matrix)
     end
     
     if ~isfield(params, 'similarity_threshold') 
-        params.similarity_threshold = 0.5;
+        params.similarity_threshold = 1;
     end
     if ~isfield(params, 'isWithSample')
         isWithSample = true;
@@ -132,7 +132,7 @@ function [Ws, Hs, iter,As] = boostCF(A, params, social_matrix)
     Original_unexplained = sum(sum(A));
     disp("===============BoostCF=================")
     fprintf("The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
-    fprintf('dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f]\n', dim, lambda, lambda_social, lambda_item);
+    fprintf('dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
     unexplained_last = Original_unexplained;
     
 %%
