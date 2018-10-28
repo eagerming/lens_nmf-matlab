@@ -85,7 +85,6 @@ for numOfLoop=1:loop
             dataname = 'filmtrust';
             try
                 load filmtrust;
-                social_matrix = S;
             catch
                 rating_filePath = 'data/filmtrust/rating/ratings.txt';
                 trust_filePath = 'data/filmtrust/trust/trust.txt';
@@ -112,9 +111,13 @@ for numOfLoop=1:loop
         end
         if has_trust
             social_matrix = (social_matrix + social_matrix')/2;
+            index = sum(social_matrix) > 0;
+            social_matrix(:,index) = bsxfun(@rdivide, social_matrix(:,index), sum(social_matrix(:,index)));
         end
         if has_itemfeature
             item_matrix = (item_matrix + item_matrix')/2;
+            index = sum(item_matrix) > 0;
+            item_matrix(:,index) = bsxfun(@rdivide, item_matrix(:,index), sum(item_matrix(:,index)));
         end
         log_name = dataname;
         [fid, fidpath] = create_new_log(log_name);
@@ -282,10 +285,10 @@ for numOfLoop=1:loop
 
       % =========================================================
         
-        dim_list = 1:4;
-        lambda_list = [0 0.01 0.1 0.5];
-        lambda_social_list = [0 0.1 0.5];
-        sample_list = [0.2 0.3 0.5 0.6];
+        dim_list = 3;
+        lambda_list = [0.1 0.01 0.1 0.5];
+        lambda_social_list = [0.1 0.02 0.1];
+        sample_list = [0.5 0.5 0.8];
         
       % =========================================================
         
@@ -302,10 +305,11 @@ for numOfLoop=1:loop
                         sample_threshold = sample_list(ind_sample);
                         
                         mcnt = mcnt + 1;
+                        
 
                         param.dim = dim;    
-                        param.total = 50;
-                        param.max_iter = 100;
+                        param.total = 100;
+                        param.max_iter = 50;
                         param.fid = fid;
                         param.exitAtDeltaPercentage = 1e-4;
 
@@ -321,7 +325,7 @@ for numOfLoop=1:loop
                         param.learning_rate = 0;
                         param.is_zero_mask_of_missing = true;
                         if has_trust
-                            param.social_matrix = social_matrix;
+                            param.social_matrix = social_matrix;  
                         end
                         if has_itemfeature
                             param.item_matrix = item_matrix;
@@ -329,8 +333,11 @@ for numOfLoop=1:loop
 
                     % ===================================================
 
-                        mname{mcnt} = sprintf('BoostCF, dim=%d, l=%.2f, ls=%.2f, li=%.2f', dim, lambda, lambda_social, lambda_item);
-                        fprintf('BoostCF #[%d]\n',mcnt);
+                        mname{mcnt} = sprintf('BoostCF, dim=%d, l=%.2f, ls=%.2f, li=%.2f, samle=%.2f', dim, lambda, lambda_social, lambda_item, sample_threshold);
+                        fprintf('==============BoostCF #[%d]===============\n',mcnt);
+                        if exist('fid', 'var')
+                            fprintf(fid, '==============BoostCF #[%d]===============\n',mcnt);
+                        end
         %                 fprintf(fid, 'BoostCF #[%d], beta=%.2f, dim=%d, alpha=%.2f\n',mcnt, beta, dim, alpha);
                         tic;
                         [Ws_wgt, Hs_wgt] = boostCF(target_R, param);
@@ -425,10 +432,13 @@ for numOfLoop=1:loop
         
        %% Performance
         mcnt = length(V);
-        K_list = 1:30;
-        for i = 1:mcnt
+        K_list = [1 3 5 10];
+        
+        profile on;
+        for i = [4 6]%1:mcnt
             [final_result{i}, MAE{i}, RMSE{i}] = evaluation(V{i}, U{i}, test_matrix, K_list);
         end
+        profile viewer;
         
 %         mcnt = 1:4;
         topN = 3;

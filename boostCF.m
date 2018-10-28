@@ -130,18 +130,24 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
 %     imagesc(A);
 %     hold off
     Original_unexplained = sum(sum(A));
-    disp("===============BoostCF=================")
+%     disp("===============BoostCF=================")
     fprintf("The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
     fprintf('dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
+    fprintf("--------------------------------------------\n");
+    if isfield(params,'fid')
+        fprintf(params.fid, "The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
+        fprintf(params.fid, 'dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
+        fprintf(params.fid, "-------------------------------------------\n");
+    end
     unexplained_last = Original_unexplained;
     
 %%
+    rng(0);
     for iter=1:(total) % loop for given number of iterations
 
         As = Rs{iter};
         
         if isWithSample
-            
             row_idx = datasample(1:size(As,1), 1, 'Replace', false, 'Weights', full(sum(abs(As),2)));
             col_idx = datasample(1:size(As,2), 1, 'Replace', false, 'Weights', full(sum(abs(As))));
             [A_cossim_row, A_cossim_col] = get_cosine_similarity(As, row_idx, col_idx);
@@ -210,24 +216,29 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
             unexplained = sum(sum(abs(Rs{iter + 1})));
             percentage = unexplained/Original_unexplained;
             
-            fprintf("Round[%d]: Size[%d×%d], Iteration[%d], Unexplained part[%f], Percentage[%f]%%\n", ...
-                iter, full(subsize_row), full(subsize_col), iteration, full(unexplained), full(percentage) * 100);
+            fprintf("Round[%d]: Size[%d×%d], Iteration[%d], Unexplained part[%f], Percentage[%f]%%, delta%%=[%f]\n", ...
+                iter, full(subsize_row), full(subsize_col), iteration, full(unexplained), full(percentage) * 100, full((unexplained_last - unexplained)/Original_unexplained));
+            if isfield(params,'fid')
+                fprintf(params.fid, "Round[%d]: Size[%d×%d], Iteration[%d], Unexplained part[%f], Percentage[%f]%%, delta%%=[%f]\n", ...
+                iter, full(subsize_row), full(subsize_col), iteration, full(unexplained), full(percentage) * 100, full((unexplained_last - unexplained)/Original_unexplained));
+            end
 %             if isfield(params,'exitAtDeltaPercentage')
 %                 if abs(unexplained_last - unexplained)/Original_unexplained < params.exitAtDeltaPercentage ||...
 %                           unexplained/Original_unexplained < params.exitAtDeltaPercentage
 %                     break;
 %                 end
 %             end
-            
+
             unexplained_last = unexplained;
             
 %         end
             
     end
     if isfield(params,'fid')
-        fprintf(params.fid, 'dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f]\n', dim, lambda, lambda_social, lambda_item);
-        fprintf(params.fid, "Terminate at Round [%d]: Unexplained part: %f, Percentage %f%%, delta%%=%f\n", ...
-                iter, full(unexplained), full(percentage) * 100, full((unexplained_last - unexplained)/Original_unexplained));
+        fprintf(params.fid, '\n\n');
+%         fprintf(params.fid, 'dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f]\n', dim, lambda, lambda_social, lambda_item);
+%         fprintf(params.fid, "Terminate at Round [%d]: Unexplained part: %f, Percentage %f%%, delta%%=%f\n", ...
+%                 iter, full(unexplained), full(percentage) * 100, full((unexplained_last - unexplained)/Original_unexplained));
     end
     
 end

@@ -95,9 +95,9 @@ end
 %% Save data to mat format
 
 if exist('item_network_filePath', 'var')
-    save(strcat('data/',dataname), 'R', 'social_matrix', 'map');
+    save(strcat('data/',dataname), 'R', 'social_matrix', 'map' , 'item_matrix');
 else
-    save(strcat('data/',dataname), 'R', 'social_matrix', 'map', 'item_matrix');
+    save(strcat('data/',dataname), 'R', 'social_matrix', 'map');
 end
 
 end

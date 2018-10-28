@@ -83,7 +83,7 @@ if ~isfield(params, 'random_seed')
 end
 
 if ~isfield(params, 'conv_eps') 
-    params.conv_eps = 0;
+    params.conv_eps = 1e-3;
 end
 if ~isfield(params, 'cf') 
     params.cf = 'kl';
@@ -195,8 +195,14 @@ end
 for iter = 1:params.max_iter
     
     % H updates
-    dph = W' * WH + (lambda_social + lambda) * H; 
-    dmh = W' * R + lambda_social * (H * social_matrix);        
+%     dph = W' * WH + (lambda_social + lambda) * H;
+%     dmh = W' * R + lambda_social * (H * social_matrix);
+    dph = 0; dmh=0;
+    [dph, dmh] = update(W' * WH, dph, dmh);
+    [dph, dmh] = update((lambda_social + lambda) * H, dph, dmh);
+    [dph, dmh] = update( - W' * R, dph, dmh);
+    [dph, dmh] = update( - lambda_social * (H * social_matrix), dph, dmh);
+    
     if learning_rate ~= 0
 %             fprintf("coefficient = %f", mean(mean(dmh ./ dph)));
         H = H + params.learning_rate * (dmh - dph);
@@ -213,8 +219,16 @@ for iter = 1:params.max_iter
     end
 
     % W updates
-    dpw = WH * H' + bsxfun(@times, sum((R * H' + lambda_item * (W' * item_matrix)') .* W), W) + (lambda_item + lambda) * W;
-    dmw = R * H' + lambda_item * (W' * item_matrix)' + bsxfun(@times, sum((WH * H' + (lambda_item + lambda) * W) .* W), W);
+%     dpw = WH * H' + bsxfun(@times, sum((R * H' + lambda_item * (W' * item_matrix)') .* W), W) + (lambda_item + lambda) * W;
+%     dmw = R * H' + lambda_item * (W' * item_matrix)' + bsxfun(@times, sum((WH * H' + (lambda_item + lambda) * W) .* W), W);
+    dpw = 0; dmw = 0;
+    [dpw, dmw] = update(WH * H', dpw, dmw);
+    [dpw, dmw] = update(bsxfun(@times, sum((R * H' + lambda_item * (W' * item_matrix)') .* W), W), dpw, dmw);
+    [dpw, dmw] = update((lambda_item + lambda) * W, dpw, dmw);
+    [dpw, dmw] = update( -R * H', dpw, dmw);
+    [dpw, dmw] = update( -lambda_item * (W' * item_matrix)', dpw, dmw);
+    [dpw, dmw] = update( -bsxfun(@times, sum((WH * H' + (lambda_item + lambda) * W) .* W), W), dpw, dmw);
+    
     if learning_rate ~= 0
 %                 fprintf("\tH_coefficient = %f\n", mean(mean(dmw ./ dpw)));
         W = W + params.learning_rate * (dmw - dpw);
@@ -235,7 +249,8 @@ for iter = 1:params.max_iter
 
 
     % Compute the objective function
-    cost = sum(sum((R - WH) .^ 2))/2 + ...
+    div = sum(sum((R - WH) .^ 2))/2;
+    cost = div + ...
         lambda * (sum(sum(W .^2 ))/2 + sum(sum(H .^2 ))/2) + ...
         lambda_item * sum(sum((W - (W' * item_matrix)').^2)) +...
         lambda_social * sum(sum((H - H * social_matrix).^2)); 
@@ -246,9 +261,9 @@ for iter = 1:params.max_iter
     
     % Convergence check
     if iter > 1 && params.conv_eps > 0
-        e = abs(cost - last_cost) / last_cost; 
+        e = (last_cost - cost) / last_cost; 
         if (e < params.conv_eps)
-%             disp('Convergence reached, aborting iteration') 
+%             disp('Convergence reached, aborting iteration')
             break
         end
     end
@@ -259,4 +274,18 @@ W_return(row_ind,:) = W;
 H_return(:, col_ind) = H;
 
 % toc;
+end
+
+function [dp, dm] = update(A, dp, dm)
+    dp = dp + positive(A);
+    dm = dm + negative(A);
+end
+
+
+function [X_positive] = positive(X)
+    X_positive = (X + abs(X))/2;
+end
+
+function [X_negative] = negative(X)
+    X_negative = (-X + abs(X))/2;
 end

@@ -1,16 +1,4 @@
-function result = evaluation_per_user(recommendation, num_of_groundtruth, groundtruth, groundtruth_index)
-    
-    K = length(groundtruth);
-    
-    index_groundtruth_in_rec = inf(length(recommendation),1);
-    for i = 1:K
-        index_groundtruth_in_rec(groundtruth_index(i)) = i;
-    end
-    
-    [~, index_bigRec] = sort(recommendation,'descend');
-    new_pos =  index_groundtruth_in_rec(index_bigRec);
-    [~, index_of_groundtruth_in_ordered_recommendation] = sort(new_pos);
-    index_of_groundtruth_in_ordered_recommendation(K+1:end) = [];
+function result = Ranking_evaluate(index_of_groundtruth_in_ordered_recommendation, num_of_groundtruth, groundtruth)
     
     result.map = MAP(index_of_groundtruth_in_ordered_recommendation);
     result.precision = Precision(index_of_groundtruth_in_ordered_recommendation);
