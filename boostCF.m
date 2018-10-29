@@ -142,14 +142,24 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
     unexplained_last = Original_unexplained;
     
 %%
-    rng(0);
+    rng('default');
     for iter=1:(total) % loop for given number of iterations
 
         As = Rs{iter};
         
         if isWithSample
-            row_idx = datasample(1:size(As,1), 1, 'Replace', false, 'Weights', full(sum(abs(As),2)));
-            col_idx = datasample(1:size(As,2), 1, 'Replace', false, 'Weights', full(sum(abs(As))));
+            try
+                row_idx = datasample(1:size(As,1), 1, 'Replace', false, 'Weights', full(sum(abs(As),2)));
+                col_idx = datasample(1:size(As,2), 1, 'Replace', false, 'Weights', full(sum(abs(As))));
+            catch
+                fprintf( "Sample fail, the weight has some NaN, break!\n");
+                fprintf( "-------------------------------------------\n");
+                if isfield(params,'fid')
+                    fprintf(params.fid, "Sample fail, the weight has some NaN, break!\n");
+                    fprintf(params.fid, "-------------------------------------------\n");
+                end
+                break;
+            end
             [A_cossim_row, A_cossim_col] = get_cosine_similarity(As, row_idx, col_idx);
             
             
