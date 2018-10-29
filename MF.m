@@ -167,10 +167,11 @@ W = rand(m, dim);
 H = rand(dim, n);
 
 
-
+FLR = 1e-9;
 
 % Normalize the columns of W and rescale H accordingly
 Wn = sqrt(sum(W.^2));
+Wn(Wn == 0) = FLR;
 W  = bsxfun(@rdivide,W, Wn);
 H  = bsxfun(@times,  H, Wn');
 
@@ -178,7 +179,7 @@ if ~isfield(params, 'display')
     params.display = 0;
 end
 
-FLR = 1e-9;
+
 % flr = -inf;
 % last_cost = Inf;
 
@@ -242,6 +243,7 @@ for iter = 1:params.max_iter
         
     % Normalize the columns of W
     W = bsxfun(@rdivide,W,sqrt(sum(W.^2)));
+    W(isnan(W)) = 0;
     
     if params.is_zero_mask_of_missing
         WH = mask_result(R, W, H);
