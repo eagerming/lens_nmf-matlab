@@ -195,14 +195,15 @@ end
 for iter = 1:params.max_iter
     
     % H updates
-%     dph = W' * WH + (lambda_social + lambda) * H;
-%     dmh = W' * R + lambda_social * (H * social_matrix);
-    dph = 0; dmh=0;
-    [dph, dmh] = update(W' * WH, dph, dmh);
-    [dph, dmh] = update((lambda_social + lambda) * H, dph, dmh);
-    [dph, dmh] = update( - W' * R, dph, dmh);
-    [dph, dmh] = update( - lambda_social * (H * social_matrix), dph, dmh);
-    
+    dph = W' * WH + (lambda_social + lambda) * H;
+    dmh = W' * R + lambda_social * (H * social_matrix);
+%     dph = 0; dmh=0;
+%     [dph, dmh] = update(W' * WH, dph, dmh);
+%     [dph, dmh] = update((lambda_social + lambda) * H, dph, dmh);
+%     [dph, dmh] = update( - W' * R, dph, dmh);
+%     [dph, dmh] = update( - lambda_social * (H * social_matrix), dph, dmh);
+%     aaa = aa - dph;
+%     bbb = (aa - bb) - (dph - dmh);
     if learning_rate ~= 0
 %             fprintf("coefficient = %f", mean(mean(dmh ./ dph)));
         H = H + params.learning_rate * (dmh - dph);
@@ -219,16 +220,17 @@ for iter = 1:params.max_iter
     end
 
     % W updates
-%     dpw = WH * H' + bsxfun(@times, sum((R * H' + lambda_item * (W' * item_matrix)') .* W), W) + (lambda_item + lambda) * W;
-%     dmw = R * H' + lambda_item * (W' * item_matrix)' + bsxfun(@times, sum((WH * H' + (lambda_item + lambda) * W) .* W), W);
-    dpw = 0; dmw = 0;
-    [dpw, dmw] = update(WH * H', dpw, dmw);
-    [dpw, dmw] = update(bsxfun(@times, sum((R * H' + lambda_item * (W' * item_matrix)') .* W), W), dpw, dmw);
-    [dpw, dmw] = update((lambda_item + lambda) * W, dpw, dmw);
-    [dpw, dmw] = update( -R * H', dpw, dmw);
-    [dpw, dmw] = update( -lambda_item * (W' * item_matrix)', dpw, dmw);
-    [dpw, dmw] = update( -bsxfun(@times, sum((WH * H' + (lambda_item + lambda) * W) .* W), W), dpw, dmw);
-    
+    dpw = WH * H' + bsxfun(@times, sum((R * H' + lambda_item * (W' * item_matrix)') .* W), W) + (lambda_item + lambda) * W;
+    dmw = R * H' + lambda_item * (W' * item_matrix)' + bsxfun(@times, sum((WH * H' + (lambda_item + lambda) * W) .* W), W);
+%     dpw = 0; dmw = 0;
+%     [dpw, dmw] = update(WH * H', dpw, dmw);
+%     [dpw, dmw] = update(bsxfun(@times, sum((R * H' + lambda_item * (W' * item_matrix)') .* W), W), dpw, dmw);
+%     [dpw, dmw] = update((lambda_item + lambda) * W, dpw, dmw);
+%     [dpw, dmw] = update( -R * H', dpw, dmw);
+%     [dpw, dmw] = update( -lambda_item * (W' * item_matrix)', dpw, dmw);
+%     [dpw, dmw] = update( -bsxfun(@times, sum((WH * H' + (lambda_item + lambda) * W) .* W), W), dpw, dmw);
+%     aaa = aa - dpw;
+%     bbb = (aa - bb) - (dpw - dmw);
     if learning_rate ~= 0
 %                 fprintf("\tH_coefficient = %f\n", mean(mean(dmw ./ dpw)));
         W = W + params.learning_rate * (dmw - dpw);
