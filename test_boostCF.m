@@ -285,10 +285,10 @@ for numOfLoop=1:loop
 
       % =========================================================
         
-        dim_list = 3;
-        lambda_list = [0.1 0.01 0.1 0.5];
-        lambda_social_list = [0.1 0.02 0.1];
-        sample_list = [0.5 0.5 0.8];
+        dim_list = 1:4;
+        lambda_list = [0 0.1 0.5];
+        lambda_social_list = [0 0.1 0.5];
+        sample_list = [0 0.5 0.8];
         
       % =========================================================
         
@@ -432,10 +432,10 @@ for numOfLoop=1:loop
         
        %% Performance
         mcnt = length(V);
-        K_list = [1 3 5 10];
+        K_list = [1 3 5 10 15 20];
         
         profile on;
-        for i = [4 6]%1:mcnt
+        for i = 1:mcnt
             [final_result{i}, MAE{i}, RMSE{i}] = evaluation(V{i}, U{i}, test_matrix, K_list);
         end
         profile viewer;
