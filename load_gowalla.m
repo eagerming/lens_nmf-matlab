@@ -1,8 +1,8 @@
-function load_gowalla()
+% function load_gowalla()
 %%
 % fid = fopen('data/gowalla/visited_spots.txt','r');
 gowalla_data = importdata('data/gowalla/visited_spots.txt');
-reading_line = 50000;
+reading_line = 500;
 num_of_line = length(gowalla_data);
 
 
@@ -13,13 +13,8 @@ for i = 1:min(reading_line, num_of_line)
     poi_id = extractAfter(tline, '[');
     poi_id = extractBefore(poi_id,  ']');
     poi_list = split(poi_id, ', ');
-    
-    user_id = str2double(user_id);
-    for p = poi_list'
-        poi = p{1};
-        poi = str2double(poi); 
-        R(poi, user_id) = 1;
-    end
+    poi_list = str2num(char(poi_list));
+    R(poi_list, user_id) = 1;
 end
 
 
@@ -28,7 +23,7 @@ end
 %%
 
 fid = fopen('data/gowalla/spot_location.txt','r');
-reading_line = 50000;
+reading_line = 500;
 C = textscan(fid, '%d %f %f\n', reading_line);
 fclose(fid);
 
@@ -56,16 +51,19 @@ lon_base = lon(base_id);
 
 item_matrix = sparse(1);
 for i = 1:num_base
+    neighbor = [];
+    poi_base = poi(base_id(i));
     for j = 1:num_spot
         distt = Dist(lat_base(i), lon_base(i), lat(j), lon(j));
         if distt <= distance_threshold
-            item_matrix(base_id(i), j) = 1;
-            item_matrix(j, base_id(i)) = 1;
+            neighbor = [neighbor poi(j)];
         end
     end
+    item_matrix(poi_base, neighbor) = 1;
+	item_matrix(neighbor, poi_base) = 1;
 end
 
-end
+% end
 
 %%
 function distt = Dist(lat1, lon1, lat2, lon2)
