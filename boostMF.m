@@ -26,8 +26,8 @@ function [w, h] = boostMF(R, params)
         params.conv_eps = 1e-4;
     end
 
-    if ~isfield(params, 'is_zero_mask_of_missing')
-        params.is_zero_mask_of_missing = true;
+    if ~isfield(params, 'is_mask')
+        params.is_mask = true;
     end
     if ~isfield(params, 'display') 
         params.display = 0;
@@ -77,7 +77,7 @@ function [w, h] = boostMF(R, params)
     
     %% 
     
-    if params.is_zero_mask_of_missing
+    if params.is_mask
         lambda = mask_result(R, w, h);
     else
         lambda = w * h;
@@ -98,7 +98,7 @@ function [w, h] = boostMF(R, params)
             h = h .* dmh ./ dph;
         end
                 
-        if params.is_zero_mask_of_missing
+        if params.is_mask
             lambda = mask_result(R, w, h);
         else
             lambda = w * h;
@@ -123,7 +123,7 @@ function [w, h] = boostMF(R, params)
         h  = bsxfun(@times, h, wn');
         
         
-        if params.is_zero_mask_of_missing
+        if params.is_mask
             lambda = mask_result(v, w, h);
         else
             lambda =w * h;

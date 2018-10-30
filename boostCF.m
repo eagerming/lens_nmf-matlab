@@ -55,12 +55,15 @@
 
 function [Ws, Hs, iter,As] = boostCF(A, params)
     
-    if ~isfield(params, 'is_zero_mask_of_missing') 
-        params.is_zero_mask_of_missing = true;
+    if ~isfield(params, 'is_mask') 
+        if isfield(params, 'mask') 
+            params.is_mask = true;
+        else
+            params.is_mask = false;
+        end
     end
-    if params.is_zero_mask_of_missing
-        mask = A~=0;
-        params.mask = mask;
+    if params.is_mask
+        mask = params.mask;
     end
     
     if ~isfield(params, 'similarity_threshold') 
@@ -215,7 +218,7 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
 %             [Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*Rs{iter},0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
 
             % update residual matrix
-            if params.is_zero_mask_of_missing
+            if params.is_mask
                 Rs{iter+1} = update_res_matrix(Rs{iter}, Ws{iter},Hs{iter}, mask); 
             else
                 Rs{iter+1} = update_res_matrix(Rs{iter}, Ws{iter},Hs{iter});

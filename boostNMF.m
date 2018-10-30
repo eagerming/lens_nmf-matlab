@@ -78,13 +78,13 @@ end
 
 
 
-if ~isfield(params, 'is_zero_mask_of_missing') 
-    is_zero_mask_of_missing = false;
+if ~isfield(params, 'is_mask') 
+    is_mask = false;
 else
-    is_zero_mask_of_missing = params.is_zero_mask_of_missing;
+    is_mask = params.is_mask;
 end
 
-if is_zero_mask_of_missing
+if is_mask
     if ~isfield(params, 'mask') 
         error('Mask abscent!');
     else
@@ -122,7 +122,7 @@ for iter = 1 : max_iter
     
     social_W = (W' * item_matrix)';
     for i = 1:num_row
-        if is_zero_mask_of_missing
+        if is_mask
             indicate_vec = mask(i,:);
         else
             indicate_vec = true(1,num_col);
@@ -165,7 +165,7 @@ for iter = 1 : max_iter
     W = bsxfun(@times, W, 1./norms_W);
     H  = bsxfun(@times, H, norms_W');
     
-%     if params.is_zero_mask_of_missing
+%     if params.is_mask
 %         L = mask_result(R, W, H);
 %     else
 %         L = W * H;
@@ -176,7 +176,7 @@ for iter = 1 : max_iter
 %     
     social_H = (H * social_matrix);
     for j = 1:num_col
-        if is_zero_mask_of_missing
+        if is_mask
             indicate_vec = mask(:,j);
         else
             indicate_vec = true(num_row,1);
@@ -211,7 +211,7 @@ for iter = 1 : max_iter
     end
 
     
-    if params.is_zero_mask_of_missing
+    if params.is_mask
         L = mask_result(R, W, H);
     else
         L = W * H;

@@ -27,13 +27,17 @@
 % hold off;
 
 
-idx = 6;
-field = fieldnames(final_result{idx});
+for idx = evaluate_methods
+%     idx = 1;
+    field = fieldnames(final_result{idx});
+    dim = size(final_result{idx}, 1);
+    K = size(final_result{idx}, 2);
 
-for k = 1:length(field)
-    for i = 1:4
-        for j =1:300
-            eval(['ranking', num2str(idx) ,'_',field{k}, '(', num2str(j) ,',', num2str(i) ,')', ' = ' num2str( final_result{idx}(j,i).(field{k})),';']);
+    for k = 1:length(field)
+        for i = 1:K
+            for j =1:dim
+                eval(['ranking', '_',field{k},'{', num2str(idx),'}','(', num2str(j) ,',', num2str(i) ,')', ' = ' num2str( final_result{idx}(j,i).(field{k})),';']);
+            end
         end
     end
 end

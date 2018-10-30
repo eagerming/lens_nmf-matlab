@@ -91,8 +91,12 @@ end
 if ~isfield(params, 'cf') 
     params.cf = 'kl';
 end
-if ~isfield(params, 'is_zero_mask_of_missing') 
-    params.is_zero_mask_of_missing = true;
+if ~isfield(params, 'is_mask') 
+    if isfield(params, 'mask') 
+        params.is_mask = true;
+    else
+        params.is_mask = false;
+    end
 end
 if ~isfield(params, 'learning_rate')
     learning_rate = 0;
@@ -115,7 +119,7 @@ switch params.cf
 end
 
 if params.random_seed > 0 
-    rand('seed', params.random_seed);
+    rng(params.random_seed);
 end
 if ~isfield(params, 'init_w') 
     if ~isfield(params, 'r')
@@ -183,8 +187,8 @@ w_ind = params.w_update_ind;
 update_h = sum(h_ind);
 update_w = sum(w_ind);
 
-if params.is_zero_mask_of_missing
-    lambda = max(mask_result(v, w, h), flr);
+if params.is_mask
+    lambda = max(mask_result(params.mask, w, h), flr);
 else
     lambda = max(w * h, flr);
 end
@@ -221,8 +225,8 @@ for it = 1:params.max_iter
                 dmh = w(:, h_ind)' * (v .* lambda.^(div_beta - 2));
                 h(h_ind, :) = h(h_ind, :) .* dmh ./ dph;
         end
-        if params.is_zero_mask_of_missing
-            lambda = max(mask_result(v, w, h), flr);
+        if params.is_mask
+            lambda = max(mask_result(params.mask, w, h), flr);
         else
             lambda = max(w * h, flr);
         end
@@ -268,7 +272,7 @@ for it = 1:params.max_iter
         end
         % Normalize the columns of W
         w = bsxfun(@rdivide,w,sqrt(sum(w.^2)));
-        if params.is_zero_mask_of_missing
+        if params.is_mask
             lambda = max(mask_result(v, w, h), flr);
         else
             lambda = max(w * h, flr);

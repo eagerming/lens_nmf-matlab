@@ -91,8 +91,8 @@ end
 if ~isfield(params, 'cf') 
     params.cf = 'kl';
 end
-if ~isfield(params, 'is_zero_mask_of_missing') 
-    params.is_zero_mask_of_missing = true;
+if ~isfield(params, 'is_mask') 
+    params.is_mask = true;
 end
 
 switch params.cf 
@@ -171,7 +171,7 @@ w_ind = params.w_update_ind;
 update_h = sum(h_ind);
 update_w = sum(w_ind);
 
-if params.is_zero_mask_of_missing
+if params.is_mask
 % 	mask = v ==0;
 %   v(mask) = lambda(mask);
     num_row = size(v,1);
@@ -188,7 +188,7 @@ for it = 1:params.max_iter
     % H updates
     if update_h > 0 
 
-        if params.is_zero_mask_of_missing
+        if params.is_mask
             for i = 1:num_col
                 v_i = v(:,i);
                 indicate_vec = v_i > 0;
@@ -234,7 +234,7 @@ for it = 1:params.max_iter
                     h(h_ind, :) = h(h_ind, :) .* dmh ./ dph;
             end
             lambda = max(w * h, flr); 
-    %         if params.is_zero_mask_of_missing
+    %         if params.is_mask
     %             v(mask) = lambda(mask);
             end
         end
@@ -243,7 +243,7 @@ for it = 1:params.max_iter
     
     %% W updates
     if update_w > 0 
-        if params.is_zero_mask_of_missing
+        if params.is_mask
             for j = 1:num_row
                 v_j = v(j,:);
                 indicate_vec = v_j > 0;
@@ -326,7 +326,7 @@ for it = 1:params.max_iter
             % Normalize the columns of W
             w = bsxfun(@rdivide,w,sqrt(sum(w.^2)));
             lambda = max(w * h, flr); 
-%             if params.is_zero_mask_of_missing
+%             if params.is_mask
 %                 v(mask) = lambda(mask);
 %             end
         end

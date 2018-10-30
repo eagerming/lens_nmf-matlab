@@ -72,7 +72,7 @@ for numOfLoop=1:loop
     
     loop = loop + 1; % increase count
     
-	for choice=1:1  % value of choice belongs to [1,5] where the value indicates dataset
+	for choice=2:2  % value of choice belongs to [1,5] where the value indicates dataset
         
         close all;
         clearvars -except loop choice;
@@ -88,7 +88,7 @@ for numOfLoop=1:loop
             catch
                 rating_filePath = 'data/filmtrust/rating/ratings.txt';
                 trust_filePath = 'data/filmtrust/trust/trust.txt';
-                [R,social_matrix,map] = loadData(rating_filePath, trust_filePath, dataname);
+                [R,social_matrix,map, mask] = loadData(rating_filePath, trust_filePath, dataname);
                 clear rating_filePath trust_filePath;
             end
             has_trust = true;
@@ -103,7 +103,7 @@ for numOfLoop=1:loop
                 trust_filePath = 'data/gowalla/user_network.txt';
                 item_network_filePath = 'data/gowalla/item_network.txt';
                 
-                [R,social_matrix,map, item_matrix] = loadData(rating_filePath, trust_filePath, dataname, item_network_filePath);
+                [R,social_matrix,map, item_matrix, mask] = loadData(rating_filePath, trust_filePath, dataname, item_network_filePath);
                 clear rating_filePath trust_filePath item_network_filePath;
             end
             has_trust = true;
@@ -121,6 +121,7 @@ for numOfLoop=1:loop
         end
         log_name = dataname;
         [fid, fidpath] = create_new_log(log_name);
+        param.mask = mask;
             
       %% initialize
 
@@ -196,8 +197,8 @@ for numOfLoop=1:loop
         
         %% Random (1st method)
         mcnt = mcnt + 1; mname{mcnt} = 'Random'
-        V{mcnt} = rand(size(target_R,1), 2);
-        U{mcnt} = rand(2, size(target_R,2));
+        V{mcnt} = rand(size(target_R,1), 5);
+        U{mcnt} = rand(5, size(target_R,2));
         
         %% standard NMF (1st method)
         mcnt = mcnt + 1; mname{mcnt} = 'StandardNMF'
@@ -286,9 +287,9 @@ for numOfLoop=1:loop
       % =========================================================
         
         dim_list = 1:4;
-        lambda_list = [0 0.1 0.5];
-        lambda_social_list = [0 0.1 0.5];
-        sample_list = [0 0.5 0.8];
+        lambda_list = [0.1 0.5];
+        lambda_social_list = [0.1 0.5];
+        sample_list = [ 0.2 0.5 1];
         
       % =========================================================
         
@@ -323,7 +324,7 @@ for numOfLoop=1:loop
                         param.display = 0;
 
                         param.learning_rate = 0;
-                        param.is_zero_mask_of_missing = true;
+                        param.is_mask = true;
                         if has_trust
                             param.social_matrix = social_matrix;  
                         end
@@ -433,16 +434,33 @@ for numOfLoop=1:loop
        %% Performance
         mcnt = length(V);
         K_list = [1 3 5 10 15 20];
+        evaluate_methods = 5:6;
         
-        profile on;
-        for i = 1:mcnt
+%         profile on;
+        for i = evaluate_methods
             [final_result{i}, MAE{i}, RMSE{i}] = evaluation(V{i}, U{i}, test_matrix, K_list);
+            fprintf('Evaluation method[%d] done\n',i);
         end
-        profile viewer;
+%         profile viewer;
         
-%         mcnt = 1:4;
+        for idx = evaluate_methods
+        %     idx = 1;
+            field = fieldnames(final_result{idx});
+            dim = size(final_result{idx}, 1);
+            K = size(final_result{idx}, 2);
+
+            for k = 1:length(field)
+                for i = 1:K
+                    for j =1:dim
+                        eval(['ranking', '_',field{k},'{', num2str(idx),'}','(', num2str(j) ,',', num2str(i) ,')', ' = ' num2str( final_result{idx}(j,i).(field{k})),';']);
+                    end
+                end
+            end
+        end
+        
+        %% Visualization
         topN = 3;
-        [TopK_result, TopKindex] = select_good_result(final_result, topN, mcnt);
+        [TopK_result, TopKindex] = select_good_result(final_result, topN, evaluate_methods);
         
         fields = fieldnames(TopK_result{1});
         for i = 1 : length(fields)
