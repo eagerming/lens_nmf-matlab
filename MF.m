@@ -88,10 +88,10 @@ end
 if ~isfield(params, 'cf') 
     params.cf = 'kl';
 end
-if ~isfield(params, 'is_zero_mask_of_missing') 
-    params.is_zero_mask_of_missing = true;
+if ~isfield(params, 'is_mask') 
+    params.is_mask = true;
 end
-if params.is_zero_mask_of_missing
+if params.is_mask
     if ~isfield(params, 'mask') 
         error('Mask abscent!');
     else
@@ -184,7 +184,7 @@ end
 % last_cost = Inf;
 
 
-if params.is_zero_mask_of_missing
+if params.is_mask
     WH = mask_result(mask, W, H);
 else
     WH = W * H;
@@ -214,7 +214,7 @@ for iter = 1:params.max_iter
         H = H .* dmh ./ dph;
     end
     
-    if params.is_zero_mask_of_missing
+    if params.is_mask
         WH = mask_result(mask, W, H);
     else
         WH = W * H;
@@ -245,7 +245,7 @@ for iter = 1:params.max_iter
     W = bsxfun(@rdivide,W,sqrt(sum(W.^2)));
     W(isnan(W)) = 0;
     
-    if params.is_zero_mask_of_missing
+    if params.is_mask
         WH = mask_result(R, W, H);
     else
         WH = W * H;

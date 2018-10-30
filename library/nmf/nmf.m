@@ -1,4 +1,4 @@
-% Nonnegative Matrix Factorization : Algorithms Toolbox
+f% Nonnegative Matrix Factorization : Algorithms Toolbox
 %
 % Written by Jingu Kim (jingu.kim@gmail.com)
 %            School of Computational Science and Engineering,
@@ -73,7 +73,7 @@ function [W,H,iter,REC]=nmf(A,k,varargin)
 	params.addParamValue('track_grad'    ,1         ,@(x) isscalar(x) & x >= 0);
 	params.addParamValue('track_prev'    ,1         ,@(x) isscalar(x) & x >= 0);
 	params.addParamValue('stop_criterion',2         ,@(x) isscalar(x) & x >= 0);
-    params.addParamValue('is_zero_mask_of_missing',true);
+    params.addParamValue('is_mask',true);
 	params.parse(varargin{:});
 
     % joyfull
@@ -248,7 +248,7 @@ end
 
 function [W,H,gradW,gradH,val] = anls_bpp_iterSolver(A,W,H,iter,par,val)
 
-    if par.is_zero_mask_of_missing
+    if par.is_mask
         num_row = size(A,1);
         num_col = size(A,2);
 %         mask = A == 0;
@@ -260,7 +260,7 @@ function [W,H,gradW,gradH,val] = anls_bpp_iterSolver(A,W,H,iter,par,val)
     
 	
     %% Chongming Gao revise
-    if par.is_zero_mask_of_missing
+    if par.is_mask
         for i = 1:num_col
             indicate_vec = A(:,i) > 0;
             WtW_i = W(indicate_vec,:)' * W(indicate_vec,:);
@@ -302,7 +302,7 @@ function [W,H,gradW,gradH,val] = anls_bpp_iterSolver(A,W,H,iter,par,val)
 %     [H,~,suc_H,numChol_H,numEq_H] = nnlsm_blockpivot(WtW_reg,val.WtA,1,H);
 %     HHt_reg = applyReg(H*H',par,par.reg_w);
 %     
-%     if par.is_zero_mask_of_missing
+%     if par.is_mask
 %         A_approximate = W * H;
 %         A(mask) = A_approximate(mask);
 %     end
@@ -319,7 +319,7 @@ function [W,H,gradW,gradH,val] = anls_bpp_iterSolver(A,W,H,iter,par,val)
 	if par.track_grad
 		gradW = gradW;
         
-        if par.is_zero_mask_of_missing
+        if par.is_mask
             gradH = zeros(par.k, num_col);
             for i = 1:num_col
                 indicate_vec = A(:,i) > 0;

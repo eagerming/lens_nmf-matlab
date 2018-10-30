@@ -1,8 +1,8 @@
-function [fMSE, vfGrad] = MSEGradient(R, w, h, is_zero_mask_of_missing)
+function [fMSE, vfGrad] = MSEGradient(R, w, h, is_mask)
     
     h = reshape(h,size(w,2), size(R,2));
 
-    if is_zero_mask_of_missing
+    if is_mask
         lambda = mask_result(R, w, h);
     else
         lambda = w * h;

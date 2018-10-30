@@ -20,8 +20,8 @@ function [W, H] = sparseMF(R, params)
         params.conv_eps = 1e-5;
     end
 
-    if ~isfield(params, 'is_zero_mask_of_missing')
-        params.is_zero_mask_of_missing = true;
+    if ~isfield(params, 'is_mask')
+        params.is_mask = true;
     end
     if ~isfield(params, 'display') 
         params.display = 0;
@@ -82,7 +82,7 @@ function [W, H] = sparseMF(R, params)
         % H updates
         for i = 1:num_col
             b = R(:,i);
-            if params.is_zero_mask_of_missing
+            if params.is_mask
                 mask = b>0;
                 b = b(mask);
                 A = w(mask,:);
@@ -99,7 +99,7 @@ function [W, H] = sparseMF(R, params)
         %% W updates
         for j = 1:num_row
             b = R(j, :)';
-            if params.is_zero_mask_of_missing
+            if params.is_mask
                 mask = b > 0;
                 b = b(mask);
                 A = h(:,mask)';

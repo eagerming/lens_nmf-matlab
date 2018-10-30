@@ -1,4 +1,4 @@
-function  [R,social_matrix,map,item_matrix]= loadData(rating_filePath, trust_filePath, dataname, item_network_filePath)
+function  [R,social_matrix,map,item_matrix,mask]= loadData(rating_filePath, trust_filePath, dataname, item_network_filePath)
 %% read filmtrust data:
 
 % rating_filePath = 'data/filmtrust/rating/ratings.txt';
@@ -46,6 +46,7 @@ map.map_from_itemID_to_rowID = map_from_itemID_to_rowID;
 %% Transform the raw rating data to rating matrix R
 
 R = sparse(num_item, num_user);
+mask = R;
 repeat_record = containers.Map();
 
 for i = 1:size(rating,1)
@@ -56,6 +57,7 @@ for i = 1:size(rating,1)
     colID = map_from_userID_to_colID(userID);
     rowID = map_from_itemID_to_rowID(itemID);
     [R, repeat_record] = put_value_into_matrix(rowID, colID, value, R, repeat_record);
+    mask(rowID, colID)= 1;
 end
 
 R = use_mean_for_multiple_records(R, repeat_record);
@@ -95,9 +97,9 @@ end
 %% Save data to mat format
 
 if exist('item_network_filePath', 'var')
-    save(strcat('data/',dataname), 'R', 'social_matrix', 'map' , 'item_matrix');
+    save(strcat('data/',dataname), 'R', 'social_matrix', 'map' , 'item_matrix', 'mask');
 else
-    save(strcat('data/',dataname), 'R', 'social_matrix', 'map');
+    save(strcat('data/',dataname), 'R', 'social_matrix', 'map', 'mask');
 end
 
 end
