@@ -1,4 +1,4 @@
-% Topic Modeling Experiment 
+    % Topic Modeling Experiment 
 % 
 % Methods: StandardNMF, Sparse NMF, Orthogonal NMF, LDA, L-EnsNMF 
 % 
@@ -286,10 +286,10 @@ for numOfLoop=1:loop
 
       % =========================================================
         
-        dim_list = 1:4;
-        lambda_list = [0.1 0.5];
-        lambda_social_list = [0.1 0.5];
-        sample_list = [ 0.2 0.5 1];
+        dim_list = 1:3;
+        lambda_list = [0 0.1 0.5];
+        lambda_social_list = [0 0.1 0.5];
+        sample_list = [0.2 0.5 1];
         
       % =========================================================
         
