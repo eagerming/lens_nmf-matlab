@@ -4,9 +4,7 @@ function [train, test] = rating_splitter(R, ratio, israndom)
     
     num_train = round(num * ratio);
     num_test = num - num_train;
-    
-    train = sparse(size(R,1),size(R,2));
-    test = sparse(size(R,1),size(R,2));
+   
     
     if israndom
         rng('default')
@@ -16,13 +14,14 @@ function [train, test] = rating_splitter(R, ratio, israndom)
         index = 1:num;
     end
     
-    for i = 1:num_train
-        ind = index(i);
-        train(ii(ind), jj(ind)) = ss(ind);
+    train = sparse(ii(index(1:num_train)), jj(index(1:num_train)), ss(index(1:num_train)));
+    if numel(train) < numel(R)
+        train(size(R,1), size(R,2)) = 0;
     end
-    for j = i+1 : num
-        ind = index(j);
-        test(ii(ind), jj(ind)) = ss(ind);
+    
+    test = sparse(ii(index(num_train + 1:end)), jj(index(num_train + 1:end)), ss(index(num_train + 1:end)));
+    if numel(test) < numel(R)
+        test(size(R,1), size(R,2)) = 0;
     end
     
     fprintf('Number of ratings of original dataset is %d\n',num);

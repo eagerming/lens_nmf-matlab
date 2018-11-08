@@ -18,22 +18,25 @@ function [ranking_result, MAE_list, RMSE_list]= evaluation(V, U, test_matrix, K_
         RMSE_list(dim) = RMSE;
 
         
-        num_of_effect_recommendation = 0;
-        indicate_result = false(1, num_of_user);
+%         num_of_effect_recommendation = 0;
+        effect_k = zeros(length(K_list),1);
+%         indicate_result = false(1, num_of_user);
 
+        num_of_groundtruth_user = zeros(num_of_user,1);
         for user = 1:num_of_user
             recommendation_userI = recommendation(:,user);
 
             groundtruth_userI = test_matrix(test_matrix(:,user) > 0,user);
             groundtruth_index = find(test_matrix(:,user) > 0);
-            groundtruth_index_missing = find(test_matrix(:,user) == 0);
+            groundtruth_index_missing = test_matrix(:,user) == 0;
             num_of_groundtruth = length(groundtruth_userI);
+            num_of_groundtruth_user(user) = num_of_groundtruth;
 
             if num_of_groundtruth <= eps
                 continue;
             end
 
-            num_of_effect_recommendation = num_of_effect_recommendation + 1;
+%             num_of_effect_recommendation = num_of_effect_recommendation + 1;
             [~, index] = sort(groundtruth_userI,'descend');
             
             recommendation_userI(groundtruth_index_missing) = 0;
@@ -47,9 +50,11 @@ function [ranking_result, MAE_list, RMSE_list]= evaluation(V, U, test_matrix, K_
 %                 else
 %                     reserved_index = index;
 %                 end
-                if num_of_groundtruth > k 
+                if num_of_groundtruth >= k 
                     reserved_index = index_of_groundtruth_in_ordered_recommendation(1:k);
+                    effect_k(i) = effect_k(i) + 1;
                 else
+                    break;
                     reserved_index = index_of_groundtruth_in_ordered_recommendation;
                 end
                 thisK = length(reserved_index);
@@ -68,7 +73,6 @@ function [ranking_result, MAE_list, RMSE_list]= evaluation(V, U, test_matrix, K_
                 lastK = thisK;
                 result_userI_k_last = result_userI_k;
 
-                indicate_result(user) = true;
                 all_result(i,user) = result_userI_k;
 
             end
@@ -82,11 +86,11 @@ function [ranking_result, MAE_list, RMSE_list]= evaluation(V, U, test_matrix, K_
                 last.(field{i}) = 0;
             end
             for user = 1:num_of_user
-                if ~ indicate_result(user)
+                if ~ (num_of_groundtruth_user(user) >= K_list(k))
                     continue;
                 end
                 for i = 1:length(field)
-                    ranking_result(dim,k).(field{i}) = last.(field{i}) + all_result(k,user).(field{i}) / num_of_effect_recommendation;
+                    ranking_result(dim,k).(field{i}) = last.(field{i}) + all_result(k,user).(field{i}) / effect_k(k);
                     last.(field{i}) = ranking_result(dim,k).(field{i});
                 end
 
@@ -116,7 +120,6 @@ function index_of_groundtruth_in_ordered_recommendation = get_index(recommendati
     new_pos =  index_groundtruth_in_rec(index_bigRec);
     [~, index_of_groundtruth_in_ordered_recommendation] = sort(new_pos);
     index_of_groundtruth_in_ordered_recommendation(K+1:end) = [];
-    
 end
 
 

@@ -72,7 +72,7 @@ for numOfLoop=1:loop
     
     loop = loop + 1; % increase count
     
-	for choice=2:2  % value of choice belongs to [1,5] where the value indicates dataset
+	for choice=3:3  % value of choice belongs to [1,5] where the value indicates dataset
         
         close all;
         clearvars -except loop choice;
@@ -99,12 +99,24 @@ for numOfLoop=1:loop
             try
                 load gowalla;
             catch
-                rating_filePath = 'data/gowalla/Rating_gowalla.txt';
-                trust_filePath = 'data/gowalla/user_network.txt';
-                item_network_filePath = 'data/gowalla/item_network.txt';
+                load_gowalla();
                 
-                [R,social_matrix,map, item_matrix, mask] = loadData(rating_filePath, trust_filePath, dataname, item_network_filePath);
-                clear rating_filePath trust_filePath item_network_filePath;
+%                 rating_filePath = 'data/gowalla/Rating_gowalla.txt';
+%                 trust_filePath = 'data/gowalla/user_network.txt';
+%                 item_network_filePath = 'data/gowalla/item_network.txt';
+%                 
+%                 [R,social_matrix,map, item_matrix, mask] = loadData(rating_filePath, trust_filePath, dataname, item_network_filePath);
+%                 clear rating_filePath trust_filePath item_network_filePath;
+            end
+            has_trust = true;
+            has_itemfeature = true;
+            
+        elseif(choice==3)
+            dataname = 'yelp';
+            try
+                load yelp_item188593_user1518169.mat;
+            catch
+                load_yelp();
             end
             has_trust = true;
             has_itemfeature = true;
@@ -145,17 +157,17 @@ for numOfLoop=1:loop
         
 
       %% Normalization
-
-        % l2 normalization
-        R_l2norm = bsxfun(@rdivide,R,sqrt(sum(R.^2)));
-        % l1 normalization
-        R_l1norm = bsxfun(@rdivide,R,sum(R));
-        % tf-idf
-        R_idf = tfidf2(R);
-        % tf-idf & l2 normalization
-        R_l2norm_idf = bsxfun(@rdivide,R,sqrt(sum(R_idf.^2)));
-        % 0-1 normalization
-        R_01 = (R - min(R(:))) / (max(R(:)) - min(R(:)));
+% 
+%         % l2 normalization
+%         R_l2norm = bsxfun(@rdivide,R,sqrt(sum(R.^2)));
+%         % l1 normalization
+%         R_l1norm = bsxfun(@rdivide,R,sum(R));
+%         % tf-idf
+%         R_idf = tfidf2(R);
+%         % tf-idf & l2 normalization
+%         R_l2norm_idf = bsxfun(@rdivide,R,sqrt(sum(R_idf.^2)));
+%         % 0-1 normalization
+%         R_01 = (R - min(R(:))) / (max(R(:)) - min(R(:)));
 
         
 
@@ -196,7 +208,7 @@ for numOfLoop=1:loop
         end
         
         %% Random (1st method)
-        mcnt = mcnt + 1; mname{mcnt} = 'Random'
+        mcnt = 1; mname{mcnt} = 'Random';
         V{mcnt} = rand(size(target_R,1), 5);
         U{mcnt} = rand(5, size(target_R,2));
         
@@ -225,6 +237,8 @@ for numOfLoop=1:loop
       %% Sparse NMF 
       
         mcnt = mcnt + 1; mname{mcnt} = 'SparseNMF'
+        param_snmf.mask = mask;
+        param_snmf.is_mask = true;
         param_snmf.r = total_topic;
         param_snmf.cf = 'ed';
         param_snmf.conv_eps = 1e-4;
@@ -286,10 +300,11 @@ for numOfLoop=1:loop
 
       % =========================================================
         
-        dim_list = 1:3;
-        lambda_list = [0 0.1 0.5];
-        lambda_social_list = [0 0.1 0.5];
-        sample_list = [0.2 0.5 1];
+        dim_list = 1:2;
+        lambda_list = [0];
+        lambda_social_list = [0 0.5];
+        sample_list = [0.2 1];
+        
         
       % =========================================================
         
@@ -301,7 +316,11 @@ for numOfLoop=1:loop
                     % ===================================================
                         dim = dim_list(ind_dim);
                         lambda_social = lambda_social_list(ind_social);
-                        lambda_item = 0;
+                        if ~has_itemfeature
+                            lambda_item = 0;
+                        else
+                            lambda_item = lambda_social;
+                        end
                         lambda = lambda_list(ind_lambda);
                         sample_threshold = sample_list(ind_sample);
                         
@@ -443,6 +462,7 @@ for numOfLoop=1:loop
         end
 %         profile viewer;
         
+%
         for idx = evaluate_methods
         %     idx = 1;
             field = fieldnames(final_result{idx});
@@ -490,7 +510,7 @@ for numOfLoop=1:loop
         save(saveName);
         
 
-        end        
+	end        
 
 end    
 
