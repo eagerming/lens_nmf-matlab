@@ -72,7 +72,7 @@ for numOfLoop=1:loop
     
     loop = loop + 1; % increase count
     
-	for choice=3:3  % value of choice belongs to [1,5] where the value indicates dataset
+	for choice=1:1  % value of choice belongs to [1,5] where the value indicates dataset
         
         close all;
         clearvars -except loop choice;
@@ -213,10 +213,10 @@ for numOfLoop=1:loop
         U{mcnt} = rand(5, size(target_R,2));
         
         %% standard NMF (1st method)
-        mcnt = mcnt + 1; mname{mcnt} = 'StandardNMF'
-        tic
-        [V{mcnt},U{mcnt}] = nmf(target_R, total_topic);
-        speed{mcnt} = toc;
+%         mcnt = mcnt + 1; mname{mcnt} = 'StandardNMF'
+%         tic
+%         [V{mcnt},U{mcnt}] = nmf(target_R, total_topic);
+%         speed{mcnt} = toc;
 
 
       %% NMF + sparse (2nd method)
@@ -297,21 +297,25 @@ for numOfLoop=1:loop
 %         U{mcnt} = U{mcnt}';
 
       %% BoostCF (5th method)
-
+      
+      
+        index_sloma = 1;
       % =========================================================
         
+        learning_rate = [0 0.005 0.01];
         dim_list = 1:2;
         lambda_list = [0];
-        lambda_social_list = [0 0.5];
-        sample_list = [0.2 1];
+        lambda_social_list = [0 0.1 0.3];
+        sampleSim_list = [0.8 0.5 0.2];
         
         
       % =========================================================
         
+        for ind_learningrate = 1:length(learning_rate)
         for ind_dim = 1:length(dim_list)
             for ind_lambda = 1:length(lambda_list)
                 for ind_social = 1:length(lambda_social_list)
-                    for ind_sample = 1:length(sample_list)
+                    for ind_sample = 1:length(sampleSim_list)
 
                     % ===================================================
                         dim = dim_list(ind_dim);
@@ -322,7 +326,6 @@ for numOfLoop=1:loop
                             lambda_item = lambda_social;
                         end
                         lambda = lambda_list(ind_lambda);
-                        sample_threshold = sample_list(ind_sample);
                         
                         mcnt = mcnt + 1;
                         
@@ -338,11 +341,11 @@ for numOfLoop=1:loop
                         param.lambda_item = lambda_item;
 
                         param.isWithSample =  true;
-                        param.sampleThreshold = 3;
-                        param.similarity_threshold = sample_threshold;
+                        param.sampleThreshold = 2;
+                        param.similarity_threshold = sampleSim_list(ind_sample);
                         param.display = 0;
 
-                        param.learning_rate = 0;
+                        param.learning_rate = learning_rate(ind_learningrate);
                         param.is_mask = true;
                         if has_trust
                             param.social_matrix = social_matrix;  
@@ -350,10 +353,17 @@ for numOfLoop=1:loop
                         if has_itemfeature
                             param.item_matrix = item_matrix;
                         end
+                        
+                    % =============
+%                         param.dim_sloma = dim * 10;
+%                         param.numOfBlock = 100;
+%                         [~, ~, A_sloma] = SLOMA(target_R, param);
+%                         A_sloma_list{index_sloma} = A_sloma;
+%                         index_sloma = index_sloma + 1;
 
                     % ===================================================
 
-                        mname{mcnt} = sprintf('BoostCF, dim=%d, l=%.2f, ls=%.2f, li=%.2f, samle=%.2f', dim, lambda, lambda_social, lambda_item, sample_threshold);
+                        mname{mcnt} = sprintf('BoostCF, dim=%d, l=%.2f, ls=%.2f, li=%.2f, samleSim=%.2f', dim, lambda, lambda_social, lambda_item, sampleSim_list(ind_sample));
                         fprintf('==============BoostCF #[%d]===============\n',mcnt);
                         if exist('fid', 'var')
                             fprintf(fid, '==============BoostCF #[%d]===============\n',mcnt);
@@ -371,6 +381,7 @@ for numOfLoop=1:loop
                     end
                 end
             end
+        end
         end
         
         %% BoostCF (5th method) 2 nd Setting
@@ -452,6 +463,7 @@ for numOfLoop=1:loop
         
        %% Performance
         mcnt = length(V);
+        K_list = [1 3 5 10 15 20];
         evaluate_methods = 1:mcnt;
         
 %         profile on;
@@ -478,25 +490,25 @@ for numOfLoop=1:loop
             end
         end
 
-        %% Visualization
-        topN = 3;
-        [TopK_result, TopKindex] = select_good_result(final_result, topN, evaluate_methods);
-        
-        fields = fieldnames(TopK_result{1});
-        for i = 1 : length(fields)
-            figure;
-            hold on;
-            for idx = 1:topN
-                y = zeros(length(K_list),1);
-                for k = 1:length(K_list)
-                    y(k) = TopK_result{idx}(k).(fields{i});
-                end
-                plot(K_list, y); 
-            end
-            title(fields(i));
-            legend(mname(TopKindex));
-            hold off;
-        end
+         %% Visualization
+%         topN = 3;
+%         [TopK_result, TopKindex] = select_good_result(final_result, topN, evaluate_methods);
+%         
+%         fields = fieldnames(TopK_result{1});
+%         for i = 1 : length(fields)
+%             figure;
+%             hold on;
+%             for idx = 1:topN
+%                 y = zeros(length(K_list),1);
+%                 for k = 1:length(K_list)
+%                     y(k) = TopK_result{idx}(k).(fields{i});
+%                 end
+%                 plot(K_list, y); 
+%             end
+%             title(fields(i));
+%             legend(mname(TopKindex));
+%             hold off;
+%         end
         
         
         

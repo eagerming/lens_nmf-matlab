@@ -103,6 +103,7 @@ if ~isfield(params, 'learning_rate')
 else
     learning_rate = params.learning_rate;
 end
+
 if isfield(params, 'lambda')
     lambda = params.lambda;
 else
@@ -118,23 +119,26 @@ if isfield(params, 'lambda_item')
 else
     lambda_item = 0;
 end
-
 if lambda_social > 0 && isfield(params, 'social_matrix')
 	social_matrix = params.social_matrix;
 else
     lambda_social = 0;
-    social_matrix = sparse(eye(size(R,2)));
+%     social_matrix = sparse(eye(size(R,2)));
+    social_matrix = 1;
 end
 if lambda_item > 0 && isfield(params, 'item_matrix')
 	item_matrix = params.item_matrix;
 else
     lambda_item = 0;
-    item_matrix = sparse(eye(size(R,1)));
+%     item_matrix = sparse(eye(size(R,1)));
+    item_matrix = 1;
 end
+
+
 %%
 
-col_ind = sum(abs(R),1) > 0.1;
-row_ind = sum(abs(R),2) > 0.1;
+col_ind = sum(abs(R),1) > 0;
+row_ind = sum(abs(R),2) > 0;
 
 if sum(col_ind) < 1 || sum(row_ind) < 1
     W_return = zeros(size(R,1),dim);
@@ -151,8 +155,19 @@ H_return = zeros(dim, size(R_original,2));
 
 
 R = R(row_ind, col_ind);
-item_matrix = item_matrix(row_ind, row_ind);
-social_matrix = social_matrix(col_ind, col_ind);
+if lambda_item
+    item_matrix = item_matrix(row_ind, row_ind);
+end
+if lambda_social
+    social_matrix = social_matrix(col_ind, col_ind);
+end
+
+costparam.lambda = lambda;
+costparam.lambda_social = lambda_social;
+costparam.lambda_item = lambda_item;
+costparam.social_matrix = social_matrix;
+costparam.item_matrix = item_matrix;
+
 mask = mask(row_ind, col_ind);
 m = size(R, 1);
 n = size(R, 2);
@@ -192,19 +207,17 @@ end
 
 
 % tic
+options = optimoptions('fminunc','Algorithm','trust-region','SpecifyObjectiveGradient',true,'Display','off', 'OptimalityTolerance',1e-2);
 
 for iter = 1:params.max_iter
-    
-    % H updates
-    dph = W' * WH + (lambda_social + lambda) * H;
-    dmh = W' * R + lambda_social * (H * social_matrix);
-%     dph = 0; dmh=0;
-%     [dph, dmh] = update(W' * WH, dph, dmh);
-%     [dph, dmh] = update((lambda_social + lambda) * H, dph, dmh);
-%     [dph, dmh] = update( - W' * R, dph, dmh);
-%     [dph, dmh] = update( - lambda_social * (H * social_matrix), dph, dmh);
-%     aaa = aa - dph;
-%     bbb = (aa - bb) - (dph - dmh);
+    % H updates, 
+    dph = W' * WH + lambda * H;
+    dmh = W' * R;
+    if lambda_social > 0
+        dph = dph + lambda_social * H;
+        dmh = dmh + lambda_social * (H * social_matrix);
+    end
+
     if learning_rate ~= 0
 %             fprintf("coefficient = %f", mean(mean(dmh ./ dph)));
         H = H + params.learning_rate * (dmh - dph);
@@ -213,25 +226,48 @@ for iter = 1:params.max_iter
 %         dmh(dmh < 0) = FLR;
         H = H .* dmh ./ dph;
     end
-    
     if params.is_mask
         WH = mask_result(mask, W, H);
     else
         WH = W * H;
     end
+    
+    
+%     [H_change, cost] = fminunc(@(H)CostFun(W, H, R, mask, true, costparam), H, options);
+%     H = H_change;
+%     H_change = fmin_adam(@(H)CostFun(W, H, R, mask, true, costparam), H(:), 0.01);
+%     H_change = reshape(H_change, size(H,1), size(H,2));
+%     H = H_change;
+    
+    
 
     % W updates
     dpw = WH * H' + bsxfun(@times, sum((R * H' + lambda_item * (W' * item_matrix)') .* W), W) + (lambda_item + lambda) * W;
     dmw = R * H' + lambda_item * (W' * item_matrix)' + bsxfun(@times, sum((WH * H' + (lambda_item + lambda) * W) .* W), W);
-%     dpw = 0; dmw = 0;
-%     [dpw, dmw] = update(WH * H', dpw, dmw);
-%     [dpw, dmw] = update(bsxfun(@times, sum((R * H' + lambda_item * (W' * item_matrix)') .* W), W), dpw, dmw);
-%     [dpw, dmw] = update((lambda_item + lambda) * W, dpw, dmw);
-%     [dpw, dmw] = update( -R * H', dpw, dmw);
-%     [dpw, dmw] = update( -lambda_item * (W' * item_matrix)', dpw, dmw);
-%     [dpw, dmw] = update( -bsxfun(@times, sum((WH * H' + (lambda_item + lambda) * W) .* W), W), dpw, dmw);
-%     aaa = aa - dpw;
-%     bbb = (aa - bb) - (dpw - dmw);
+
+    temp1 = R * H';
+    temp2 = WH * H';
+
+    dpw = WH * H' + bsxfun(@times, sum((R * H') .* W), W);
+    dmw = R * H' + bsxfun(@times, sum((WH * H') .* W), W);
+
+    if lambda
+        dpw = dpw + lambda * W; 
+%             dmw = dmw + bsxfun(@times, sum((lambda * W) .* W), W);
+        temp2 = temp2 + lambda * W;
+    end
+
+    if lambda_item
+        temp1 = temp1 + lambda_item * (W' * item_matrix)';
+        temp2 = temp2 + lambda_item * W;
+
+        dpw = dpw + lambda_item * W;
+        dmw = dmw + lambda_item * (W' * item_matrix)';
+    end
+
+    dpw = dpw + bsxfun(@times, sum(temp1 .* W), W);
+    dmw = dmw + bsxfun(@times, sum(temp2 .* W), W);
+
     if learning_rate ~= 0
 %                 fprintf("\tH_coefficient = %f\n", mean(mean(dmw ./ dpw)));
         W = W + params.learning_rate * (dmw - dpw);
@@ -240,18 +276,22 @@ for iter = 1:params.max_iter
 %         dmw(dmw < 0) = FLR;
         W = W .* dmw ./ dpw;
     end
-        
-    % Normalize the columns of W
-    W = bsxfun(@rdivide,W,sqrt(sum(W.^2)));
-    W(isnan(W)) = 0;
+    
+%     [W_change, cost] = fminunc(@(W)CostFun(W, H, R, mask, false, costparam), W, options);
+%     W = W_change;
+%         
+%     % Normalize the columns of W
+%     W = bsxfun(@rdivide,W,sqrt(sum(W.^2)));
+%     W(isnan(W)) = 0;
+    
+    
+    
     
     if params.is_mask
         WH = mask_result(R, W, H);
     else
         WH = W * H;
     end
-
-
     % Compute the objective function
     div = sum(sum((R - WH) .^ 2))/2;
     cost = div + ...
@@ -265,10 +305,10 @@ for iter = 1:params.max_iter
     
     % Convergence check
     if iter > 1 && params.conv_eps > 0
-        e = (last_cost - cost) / last_cost; 
+        e = abs(last_cost - cost) / last_cost; 
         if (e < params.conv_eps)
 %             disp('Convergence reached, aborting iteration')
-            break
+%             break;
         end
     end
 	last_cost = cost;

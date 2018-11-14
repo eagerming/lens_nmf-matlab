@@ -1,4 +1,4 @@
-f% Nonnegative Matrix Factorization : Algorithms Toolbox
+% Nonnegative Matrix Factorization : Algorithms Toolbox
 %
 % Written by Jingu Kim (jingu.kim@gmail.com)
 %            School of Computational Science and Engineering,

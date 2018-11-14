@@ -379,6 +379,7 @@ function bStop = FA_Display(options, x, optimValues, state, nEpochSize) %#ok<INU
    bStop = false;
 
    % - Should we display anything?
+    return; % close display!
    if (isequal(options.Display, 'none'))
       return;
    end

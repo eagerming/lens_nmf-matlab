@@ -1,32 +1,10 @@
 
 
-% BoostCF: Explainable Boost Collaborative Filtering by Leveraging Social network
-% and Feature Information
-%
-% Written by Chongming Gao (chongming.gao@gmail.com)
+% Collaborative Filtering with Social Local Models
+% Paper author: Huan Zhao et al.
+% Code Written by Chongming Gao (chongming.gao@gmail.com)
 %            Dept. of Computer Science and Engineering,
 %            University of Electronic Science and Technology of China
-%
-% Reference:
-%
-%  [1] Chongming Gao et al. 
-%      BoostCF: Explainable Boos t Collaborative Filtering by Leveraging Social network
-%      and Feature Information
-% 
-%  [2] Sangho Suh et al.
-%      Boosted L-EnsNMF: Local Topic Discovery via Ensemble of Nonnegative Matrix Factorization.
-%      IEEE International Conference on Data Mining 2016.
-%
-%  [3] Da Kuang Haesun Park
-%      Fast Rank-2 Nonnegative Matrix Factorization for Hierarchical Document Clustering
-%      International conference on Knowledge Discovery and Data mining 2013
-% 
-%  [4] Hyunsoo Kim and Haesun Park
-%      Sparse non-negative matrix factorizations via alternating 
-%      non-negativity-constrained least squares for microarray data analysis
-%
-% Please send bug reports, comments, or questions to Chongming Gao.
-% This code comes with no guarantee or warranty of any kind.
 %
 % Last modified 10/26/2018
 %
@@ -50,10 +28,9 @@
 % 
 % <Usage Example> 
 %
-% [Ws, Hs, Drs, Dcs, As] = lens_nmf(A, k, topk, iter); 
 
 
-function [Ws, Hs, iter,As] = boostCF(A, params)
+function [Ws, Hs, A_sloma, iter] = SLOMA(A, params)
     
     if ~isfield(params, 'is_mask') 
         if isfield(params, 'mask') 
@@ -75,16 +52,12 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
         isWithSample = params.isWithSample;
     end
     
-    if ~isfield(params, 'total')
-        total = 1000;
-    else
-        total = params.total;
-    end
+    numOfBlock = params.numOfBlock;
     
-    if ~isfield(params, 'dim') 
-        dim = 1;
+    if ~isfield(params, 'dim_sloma') 
+        dim_sloma = 1;
     else
-        dim = params.dim;
+        dim_sloma = params.dim_sloma;
     end
     if isfield(params, 'lambda')
         lambda = params.lambda;
@@ -134,64 +107,73 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
     
 %%    
     % Initialization.
-    Ws = cell(total, 1); 
-    Hs = cell(total, 1); 
-    Rs = cell(total, 1);
-    Rs{1} = A;
     
-%     if exist('social_matrix', 'var') && params.hasSocial
-%         has_social_info = true;
-%         num_user = size(A,2);
-%         for i = 1:num_user
-%             social_matrix(i,i) = 0;
-%         end
-%         social_matrix = bsxfun(@rdivide, social_matrix, sum(social_matrix,2));
-%         combine_matrix = params.alpha * social_matrix + (1 - params.alpha) * eye(num_user);
-%     else
-%         has_social_info = false;
-%     end
-    
-%     figure
-%     imagesc(A);
-%     hold off
     Original_unexplained = sum(sum(A));
 %     disp("===============BoostCF=================")
-    fprintf("The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
-    fprintf('dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
-    fprintf("--------------------------------------------\n");
+    fprintf("[SLOMA !!!!!]The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
+    fprintf('dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim_sloma, lambda, lambda_social, lambda_item, params.similarity_threshold);
+    fprintf("--------------------[SLOMA !!!!!]------------------------\n");
     if isfield(params,'fid')
         fprintf(params.fid, "The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
-        fprintf(params.fid, 'dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
-        fprintf(params.fid, "-------------------------------------------\n");
+        fprintf(params.fid, 'dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim_sloma, lambda, lambda_social, lambda_item, params.similarity_threshold);
+        fprintf(params.fid, "--------------------[SLOMA !!!!!]-----------------------\n");
     end
     unexplained_last = Original_unexplained;
     
 %%
+    Ws = cell(numOfBlock, 1); 
+    Hs = cell(numOfBlock, 1); 
+    Rs = cell(numOfBlock + 1, 1);
+    Rs{1} = A;
+
+    weight_row_init = full(sum(abs(A),2));
+    weight_row = weight_row_init;
+    weight_col_init = full(sum(abs(A),1));
+    weight_col = weight_col_init;
     
-    for iter=1:(total) % loop for given number of iterations
+    A_block = cell(numOfBlock,1);
+    rowSeed_list = zeros(numOfBlock,1);
+    colSeed_list = zeros(numOfBlock,1);
+    row_ind_list = zeros(size(A,1),numOfBlock);
+    col_ind_list = zeros(size(A,2),numOfBlock);
+    index_vec_list = zeros(numel(A),numOfBlock);
+    
+    A_sloma = zeros(size(A));
+    
+    for iter=1:(numOfBlock) % loop for given number of iterations
         rng(iter);
-        As = Rs{iter};
-        
-        if isWithSample
-            try
-                row_idx = datasample(1:size(As,1), 1, 'Replace', false, 'Weights', full(sum(abs(As),2)));
-                col_idx = datasample(1:size(As,2), 1, 'Replace', false, 'Weights', full(sum(abs(As),1)));
-            catch
-                fprintf( "Sample fail, the weight has some NaN, break!\n");
-                fprintf( "-------------------------------------------\n");
-                if isfield(params,'fid')
-                    fprintf(params.fid, "Sample fail, the weight has some NaN, break!\n");
-                    fprintf(params.fid, "-------------------------------------------\n");
-                end
-                break;
+        try
+            row_idx = datasample(1:size(A,1), 1, 'Replace', false, 'Weights', weight_row);
+            col_idx = datasample(1:size(A,2), 1, 'Replace', false, 'Weights', weight_col);
+        catch
+            fprintf( "Sample fail, the weight has some NaN, break!\n");
+            fprintf( "---------------------[SLOMA !!!!!]----------------------\n");
+            if isfield(params,'fid')
+                fprintf(params.fid, "Sample fail, the weight has some NaN, break!\n");
+                fprintf(params.fid, "------------------[SLOMA !!!!!]-------------------------\n");
             end
-            [A_cossim_row, A_cossim_col] = get_cosine_similarity(As, row_idx, col_idx);
-            
-            
-            [As, subsize_row, subsize_col, row_ind, col_ind, item_ind, social_ind] = sample_RowandCol(As, A_cossim_row, A_cossim_col, params.similarity_threshold, sampleThreshold, row_idx, col_idx, has_social_network, has_item_network, social_matrix, item_matrix);
-        else
-            subsize_row = size(A,1);
-            subsize_col = size(A,2);
+            break;
+        end
+        [A_cossim_row, A_cossim_col] = get_cosine_similarity(A, row_idx, col_idx);
+        [A_i, subsize_row, subsize_col, row_ind, col_ind, item_ind, social_ind] = sample_RowandCol(A, A_cossim_row, A_cossim_col, params.similarity_threshold, sampleThreshold, row_idx, col_idx, has_social_network, has_item_network, social_matrix, item_matrix);
+        A_block{iter} = A_i;
+        rowSeed_list(iter) = row_idx;
+        colSeed_list(iter) = col_idx;
+        row_ind_list(:,iter) = row_ind;
+        col_ind_list(:,iter) = col_ind;
+        
+        index = zeros(size(A));
+        index(row_ind, col_ind) = 1;
+        index_vec_list(:,iter) = index(:);
+        
+        weight_row(row_ind) = 0;
+        weight_col(col_ind) = 0;
+        
+        if sum(weight_row) <= eps
+            weight_row = weight_row_init;
+        end
+        if sum(weight_col) <= eps
+            weight_col = weight_col_init;
         end
         
         %% Try to use SparseNM
@@ -212,7 +194,7 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
 %         params.cf = 'ed';
 %         [W, H] = sparse_nmf(As, params);
 
-        [W, H, iteration] = MF(As, dim, params);
+        [W, H, iteration] = MF(A_i, dim_sloma, params);
         
         % profile viewer/
         % p = profile('info')
@@ -250,10 +232,10 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
             unexplained = sum(sum(abs(Rs{iter + 1})));
             percentage = unexplained/Original_unexplained;
             
-            fprintf("Round[%d]: Size[%d×%d], Iteration[%d], Unexplained part[%f], Percentage[%f%%], delta%%=[%f%%]\n", ...
+            fprintf("[SLOMA !!!!!] Round[%d]: Size[%d×%d], Iteration[%d], Unexplained part[%f], Percentage[%f%%], delta%%=[%f%%]\n", ...
                 iter, full(subsize_row), full(subsize_col), iteration, full(unexplained), full(percentage) * 100, full((unexplained_last - unexplained)/Original_unexplained * 100));
             if isfield(params,'fid')
-                fprintf(params.fid, "Round[%d]: Size[%d×%d], Iteration[%d], Unexplained part[%f], Percentage[%f%%], delta%%=[%f%%]\n", ...
+                fprintf(params.fid, "[SLOMA !!!!!] Round[%d]: Size[%d×%d], Iteration[%d], Unexplained part[%f], Percentage[%f%%], delta%%=[%f%%]\n", ...
                 iter, full(subsize_row), full(subsize_col), iteration, full(unexplained), full(percentage) * 100, full((unexplained_last - unexplained)/Original_unexplained * 100));
             end
 %             if isfield(params,'exitAtDeltaPercentage')
@@ -264,10 +246,15 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
 %             end
 
             unexplained_last = unexplained;
-            
 %         end
             
+        A_sloma = A_sloma + W * H;
     end
+    A_sloma = A_sloma(:);
+    times = max(sum(index_vec_list,2), 1e-6);
+    A_sloma = A_sloma ./ times;
+    A_sloma = reshape(A_sloma, size(A,1), size(A,2));
+    
     if isfield(params,'fid')
         fprintf(params.fid, '\n\n');
 %         fprintf(params.fid, 'dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f]\n', dim, lambda, lambda_social, lambda_item);
@@ -361,4 +348,3 @@ function [newA] = update_res_matrix(A, W, H, mask)
     newA = A - WH;
     
 end
-

@@ -1,11 +1,13 @@
-function visualBasicVector(W,H)
+function endPoint = visualBasicVector(W, H, startPoint)
     if size(W,1) ~= 2
         error('The illustration can be only applied on 2d data');
     end
     
     num = size(H,2);
-    startPoint = zeros(2,num);
     
+    if ~exist('startPoint','var')
+        startPoint = zeros(2,num);
+    end
     
     iter = size(W,2);
     for i = 1:iter
