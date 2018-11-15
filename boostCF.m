@@ -157,11 +157,11 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
     Original_unexplained = sum(sum(A));
 %     disp("===============BoostCF=================")
     fprintf("The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
-    fprintf('dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
+    fprintf('learningRate=[%f], dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', params.learning_rate, dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
     fprintf("--------------------------------------------\n");
     if isfield(params,'fid')
         fprintf(params.fid, "The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
-        fprintf(params.fid, 'dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
+        fprintf(params.fid, 'learningRate=[%f], dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', params.learning_rate, dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
         fprintf(params.fid, "-------------------------------------------\n");
     end
     unexplained_last = Original_unexplained;

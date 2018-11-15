@@ -97,7 +97,7 @@ for numOfLoop=1:loop
         elseif(choice==2)
             dataname = 'gowalla';
             try
-                load gowalla;
+                load gowalla_small;
             catch
                 load_gowalla();
                 
@@ -114,7 +114,7 @@ for numOfLoop=1:loop
         elseif(choice==3)
             dataname = 'yelp';
             try
-                load yelp_item188593_user1518169.mat;
+                load yelp_small.mat;
             catch
                 load_yelp();
             end
@@ -312,76 +312,76 @@ for numOfLoop=1:loop
       % =========================================================
         
         for ind_learningrate = 1:length(learning_rate)
-        for ind_dim = 1:length(dim_list)
-            for ind_lambda = 1:length(lambda_list)
-                for ind_social = 1:length(lambda_social_list)
-                    for ind_sample = 1:length(sampleSim_list)
+            for ind_dim = 1:length(dim_list)
+                for ind_lambda = 1:length(lambda_list)
+                    for ind_social = 1:length(lambda_social_list)
+                        for ind_sample = 1:length(sampleSim_list)
 
-                    % ===================================================
-                        dim = dim_list(ind_dim);
-                        lambda_social = lambda_social_list(ind_social);
-                        if ~has_itemfeature
-                            lambda_item = 0;
-                        else
-                            lambda_item = lambda_social;
-                        end
-                        lambda = lambda_list(ind_lambda);
-                        
-                        mcnt = mcnt + 1;
-                        
+                        % ===================================================
+                            dim = dim_list(ind_dim);
+                            lambda_social = lambda_social_list(ind_social);
+                            if ~has_itemfeature
+                                lambda_item = 0;
+                            else
+                                lambda_item = lambda_social;
+                            end
+                            lambda = lambda_list(ind_lambda);
 
-                        param.dim = dim;    
-                        param.total = 100;
-                        param.max_iter = 50;
-                        param.fid = fid;
-                        param.exitAtDeltaPercentage = 1e-4;
+                            mcnt = mcnt + 1;
 
-                        param.lambda = lambda;
-                        param.lambda_social = lambda_social;
-                        param.lambda_item = lambda_item;
 
-                        param.isWithSample =  true;
-                        param.sampleThreshold = 2;
-                        param.similarity_threshold = sampleSim_list(ind_sample);
-                        param.display = 0;
+                            param.dim = dim;    
+                            param.total = 100;
+                            param.max_iter = 50;
+                            param.fid = fid;
+                            param.exitAtDeltaPercentage = 1e-4;
 
-                        param.learning_rate = learning_rate(ind_learningrate);
-                        param.is_mask = true;
-                        if has_trust
-                            param.social_matrix = social_matrix;  
-                        end
-                        if has_itemfeature
-                            param.item_matrix = item_matrix;
-                        end
-                        
-                    % =============
-%                         param.dim_sloma = dim * 10;
-%                         param.numOfBlock = 100;
-%                         [~, ~, A_sloma] = SLOMA(target_R, param);
-%                         A_sloma_list{index_sloma} = A_sloma;
-%                         index_sloma = index_sloma + 1;
+                            param.lambda = lambda;
+                            param.lambda_social = lambda_social;
+                            param.lambda_item = lambda_item;
 
-                    % ===================================================
+                            param.isWithSample =  true;
+                            param.sampleThreshold = 2;
+                            param.similarity_threshold = sampleSim_list(ind_sample);
+                            param.display = 0;
 
-                        mname{mcnt} = sprintf('BoostCF, dim=%d, l=%.2f, ls=%.2f, li=%.2f, samleSim=%.2f', dim, lambda, lambda_social, lambda_item, sampleSim_list(ind_sample));
-                        fprintf('==============BoostCF #[%d]===============\n',mcnt);
-                        if exist('fid', 'var')
-                            fprintf(fid, '==============BoostCF #[%d]===============\n',mcnt);
-                        end
-        %                 fprintf(fid, 'BoostCF #[%d], beta=%.2f, dim=%d, alpha=%.2f\n',mcnt, beta, dim, alpha);
-                        tic;
-                        [Ws_wgt, Hs_wgt] = boostCF(target_R, param);
-                        speed{mcnt} = toc;
+                            param.learning_rate = learning_rate(ind_learningrate);
+                            param.is_mask = true;
+                            if has_trust
+                                param.social_matrix = social_matrix;  
+                            end
+                            if has_itemfeature
+                                param.item_matrix = item_matrix;
+                            end
 
-                        V{mcnt} = []; U{mcnt} = [];
-                        for i=1:length(Ws_wgt)
-                            V{mcnt} = [V{mcnt} Ws_wgt{i}];
-                            U{mcnt} = [U{mcnt}; Hs_wgt{i}];
+                        % =============
+    %                         param.dim_sloma = dim * 10;
+    %                         param.numOfBlock = 100;
+    %                         [~, ~, A_sloma] = SLOMA(target_R, param);
+    %                         A_sloma_list{index_sloma} = A_sloma;
+    %                         index_sloma = index_sloma + 1;
+
+                        % ===================================================
+
+                            mname{mcnt} = sprintf('BoostCF, learningRate = %f, dim=%d, l=%.2f, ls=%.2f, li=%.2f, samleSim=%.2f', param.learning_rate, dim, lambda, lambda_social, lambda_item, sampleSim_list(ind_sample));
+                            fprintf('==============BoostCF #[%d]===============\n',mcnt);
+                            if exist('fid', 'var')
+                                fprintf(fid, '==============BoostCF #[%d]===============\n',mcnt);
+                            end
+            %                 fprintf(fid, 'BoostCF #[%d], beta=%.2f, dim=%d, alpha=%.2f\n',mcnt, beta, dim, alpha);
+                            tic;
+                            [Ws_wgt, Hs_wgt] = boostCF(target_R, param);
+                            speed{mcnt} = toc;
+
+                            V{mcnt} = []; U{mcnt} = [];
+                            for i=1:length(Ws_wgt)
+                                V{mcnt} = [V{mcnt} Ws_wgt{i}];
+                                U{mcnt} = [U{mcnt}; Hs_wgt{i}];
+                            end
                         end
                     end
                 end
             end
-        end
         end
         
         %% BoostCF (5th method) 2 nd Setting
