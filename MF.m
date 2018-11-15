@@ -211,71 +211,71 @@ options = optimoptions('fminunc','Algorithm','trust-region','SpecifyObjectiveGra
 
 for iter = 1:params.max_iter
     % H updates, 
-%     dph = W' * WH + lambda * H;
-%     dmh = W' * R;
-%     if lambda_social > 0
-%         dph = dph + lambda_social * H;
-%         dmh = dmh + lambda_social * (H * social_matrix);
-%     end
-% 
-%     if learning_rate ~= 0
-% %             fprintf("coefficient = %f", mean(mean(dmh ./ dph)));
-%         H = H + params.learning_rate * (dmh - dph);
-%     else
-%         dph(dph == 0) = FLR;
-% %         dmh(dmh < 0) = FLR;
-%         H = H .* dmh ./ dph;
-%     end
-%     if params.is_mask
-%         WH = mask_result(mask, W, H);
-%     else
-%         WH = W * H;
-%     end
+    dph = W' * WH + lambda * H;
+    dmh = W' * R;
+    if lambda_social > 0
+        dph = dph + lambda_social * H;
+        dmh = dmh + lambda_social * (H * social_matrix);
+    end
+
+    if learning_rate ~= 0
+%             fprintf("coefficient = %f", mean(mean(dmh ./ dph)));
+        H = H + params.learning_rate * (dmh - dph);
+    else
+        dph(dph == 0) = FLR;
+%         dmh(dmh < 0) = FLR;
+        H = H .* dmh ./ dph;
+    end
+    if params.is_mask
+        WH = mask_result(mask, W, H);
+    else
+        WH = W * H;
+    end
     
     
-    [H_change, cost] = fminunc(@(H)CostFun(W, H, R, mask, true, costparam), H, options);
-    H = H_change;
+%     [H_change, cost] = fminunc(@(H)CostFun(W, H, R, mask, true, costparam), H, options);
+%     H = H_change;
     
     
 
     % W updates
 %     dpw = WH * H' + bsxfun(@times, sum((R * H' + lambda_item * (W' * item_matrix)') .* W), W) + (lambda_item + lambda) * W;
 %     dmw = R * H' + lambda_item * (W' * item_matrix)' + bsxfun(@times, sum((WH * H' + (lambda_item + lambda) * W) .* W), W);
-% 
-%     temp1 = R * H';
-%     temp2 = WH * H';
-% 
-%     dpw = WH * H' + bsxfun(@times, sum((R * H') .* W), W);
-%     dmw = R * H' + bsxfun(@times, sum((WH * H') .* W), W);
-% 
-%     if lambda
-%         dpw = dpw + lambda * W; 
-% %             dmw = dmw + bsxfun(@times, sum((lambda * W) .* W), W);
-%         temp2 = temp2 + lambda * W;
-%     end
-% 
-%     if lambda_item
-%         temp1 = temp1 + lambda_item * (W' * item_matrix)';
-%         temp2 = temp2 + lambda_item * W;
-% 
-%         dpw = dpw + lambda_item * W;
-%         dmw = dmw + lambda_item * (W' * item_matrix)';
-%     end
-% 
-%     dpw = dpw + bsxfun(@times, sum(temp1 .* W), W);
-%     dmw = dmw + bsxfun(@times, sum(temp2 .* W), W);
-% 
-%     if learning_rate ~= 0
-% %                 fprintf("\tH_coefficient = %f\n", mean(mean(dmw ./ dpw)));
-%         W = W + params.learning_rate * (dmw - dpw);
-%     else
-%         dpw(dpw == 0) = FLR;
-% %         dmw(dmw < 0) = FLR;
-%         W = W .* dmw ./ dpw;
-%     end
+
+    temp1 = R * H';
+    temp2 = WH * H';
+
+    dpw = WH * H';
+    dmw = R * H';
+
+    if lambda
+        dpw = dpw + lambda * W; 
+%             dmw = dmw + bsxfun(@times, sum((lambda * W) .* W), W);
+        temp2 = temp2 + lambda * W;
+    end
+
+    if lambda_item
+        temp1 = temp1 + lambda_item * (W' * item_matrix)';
+        temp2 = temp2 + lambda_item * W;
+
+        dpw = dpw + lambda_item * W;
+        dmw = dmw + lambda_item * (W' * item_matrix)';
+    end
+
+    dpw = dpw + bsxfun(@times, sum(temp1 .* W), W);
+    dmw = dmw + bsxfun(@times, sum(temp2 .* W), W);
+
+    if learning_rate ~= 0
+%                 fprintf("\tH_coefficient = %f\n", mean(mean(dmw ./ dpw)));
+        W = W + params.learning_rate * (dmw - dpw);
+    else
+        dpw(dpw == 0) = FLR;
+%         dmw(dmw < 0) = FLR;
+        W = W .* dmw ./ dpw;
+    end
     
-    [W_change, cost] = fminunc(@(W)CostFun(W, H, R, mask, false, costparam), W, options);
-    W = W_change;
+%     [W_change, cost] = fminunc(@(W)CostFun(W, H, R, mask, false, costparam), W, options);
+%     W = W_change;
 %         
     % Normalize the columns of W
     W = bsxfun(@rdivide,W,sqrt(sum(W.^2)));

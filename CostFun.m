@@ -48,8 +48,8 @@ function [cost, derivative] = CostFun(W,H,R,mask, isH, costparam)
         temp1 = R * H';
         temp2 = WH * H';
 
-        dpw = WH * H' + bsxfun(@times, sum((R * H') .* W), W);
-        dmw = R * H' + bsxfun(@times, sum((WH * H') .* W), W);
+        dpw = WH * H';
+        dmw = R * H';
         
         if lambda
             dpw = dpw + lambda * W; 
