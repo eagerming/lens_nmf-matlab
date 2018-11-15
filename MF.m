@@ -305,7 +305,7 @@ for iter = 1:params.max_iter
         e = abs(last_cost - cost) / last_cost; 
         if (e < params.conv_eps)
 %             disp('Convergence reached, aborting iteration')
-%             break;
+            break;
         end
     end
 	last_cost = cost;

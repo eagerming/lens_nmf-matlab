@@ -1,0 +1,6 @@
+==============BoostCF #[3]===============
+The initial unexplained part (sum of rating matrix) is 181651.000000
+learningRate=[0.000000], dim=[1], lambda=[0.00], lambda_social=[0.00], lambda_item=[0.00], sim_threshold=[0.800000]
+-------------------------------------------
+Round[1]: Size[4×5257], Iteration[50], Unexplained part[181254.906770], Percentage[99.781948%], delta%=[0.218052%]
+Round[2]: Size[4×5257], Iteration[50], Unexplained part[181154.419297], Percentage[99.726629%], delta%=[0.055319%]

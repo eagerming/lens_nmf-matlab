@@ -302,11 +302,11 @@ for numOfLoop=1:loop
         index_sloma = 1;
       % =========================================================
         
-        learning_rate = [0 0.005 0.01];
-        dim_list = 1:2;
-        lambda_list = [0];
-        lambda_social_list = [0 0.1 0.3];
-        sampleSim_list = [0.8 0.5 0.2];
+        learning_rate = [0 0.005 0.01 0.02];
+        dim_list = 1:3;
+        lambda_list = [0 0.001];
+        lambda_social_list = [0 0.001 0.01];
+        sampleSim_list = [1 0.7 0.3];
         
         
       % =========================================================
@@ -331,8 +331,8 @@ for numOfLoop=1:loop
 
 
                             param.dim = dim;    
-                            param.total = 100;
-                            param.max_iter = 50;
+                            param.total = 200;
+                            param.max_iter = 100;
                             param.fid = fid;
                             param.exitAtDeltaPercentage = 1e-4;
 
