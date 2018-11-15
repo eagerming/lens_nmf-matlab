@@ -1,4 +1,4 @@
-function [ranking_result, MAE_list, RMSE_list]= evaluation(V, U, test_matrix, K_list)
+function [ranking_result, MAE_list, RMSE_list]= evaluation(V, U, test_matrix, K_list, mask_test, isRank)
 
     
     MAE_list = zeros(size(V,2),1);
@@ -12,88 +12,91 @@ function [ranking_result, MAE_list, RMSE_list]= evaluation(V, U, test_matrix, K_
         VV = V(:, 1:dim);
         UU = U(1:dim, :);
         recommendation = VV * UU;
-        [MAE, RMSE] = Rating_evaluate(recommendation,test_matrix);
+        [MAE, RMSE] = Rating_evaluate(recommendation,test_matrix, mask_test);
         
         MAE_list(dim) = MAE;
         RMSE_list(dim) = RMSE;
 
-        
-%         num_of_effect_recommendation = 0;
-        effect_k = zeros(length(K_list),1);
-%         indicate_result = false(1, num_of_user);
+%%
+        ranking_result = [];
+        if exist('isRank','var') && isRank
+    %         num_of_effect_recommendation = 0;
+            effect_k = zeros(length(K_list),1);
+    %         indicate_result = false(1, num_of_user);
 
-        num_of_groundtruth_user = zeros(num_of_user,1);
-        for user = 1:num_of_user
-            recommendation_userI = recommendation(:,user);
-
-            groundtruth_userI = test_matrix(test_matrix(:,user) > 0,user);
-            groundtruth_index = find(test_matrix(:,user) > 0);
-            groundtruth_index_missing = test_matrix(:,user) == 0;
-            num_of_groundtruth = length(groundtruth_userI);
-            num_of_groundtruth_user(user) = num_of_groundtruth;
-
-            if num_of_groundtruth <= eps
-                continue;
-            end
-
-%             num_of_effect_recommendation = num_of_effect_recommendation + 1;
-            [~, index] = sort(groundtruth_userI,'descend');
-            
-            recommendation_userI(groundtruth_index_missing) = 0;
-            index_of_groundtruth_in_ordered_recommendation = get_index(recommendation_userI, groundtruth_userI(index), groundtruth_index(index));
-            
-            lastK = 0;
-            for i = 1:length(K_list)
-                k = K_list(i);
-%                 if num_of_groundtruth > k 
-%                     reserved_index = index(1:k);
-%                 else
-%                     reserved_index = index;
-%                 end
-                if num_of_groundtruth >= k 
-                    reserved_index = index_of_groundtruth_in_ordered_recommendation(1:k);
-                    effect_k(i) = effect_k(i) + 1;
-                else
-                    break;
-                    reserved_index = index_of_groundtruth_in_ordered_recommendation;
-                end
-                thisK = length(reserved_index);
-                if thisK == lastK
-                    result_userI_k = result_userI_k_last;
-                else
-                    
-                    groundtruth = groundtruth_userI(index(1:length(reserved_index)));
-                    result_userI_k = Ranking_evaluate(reserved_index, num_of_groundtruth, groundtruth);
-                    
-%                     result_userI_k = evaluation_per_user(... 
-%                     recommendation_userI, num_of_groundtruth, ...
-%                     groundtruth_userI(reserved_index), ...
-%                     groundtruth_index(reserved_index));
-                end
-                lastK = thisK;
-                result_userI_k_last = result_userI_k;
-
-                all_result(i,user) = result_userI_k;
-
-            end
-        end
-
-        field = fieldnames(all_result);
-
-        
-        for k = 1:length(K_list)
-            for i = 1:length(field)
-                last.(field{i}) = 0;
-            end
+            num_of_groundtruth_user = zeros(num_of_user,1);
             for user = 1:num_of_user
-                if ~ (num_of_groundtruth_user(user) >= K_list(k))
+                recommendation_userI = recommendation(:,user);
+
+                groundtruth_userI = test_matrix(mask_test(:,user) > 0,user);
+                groundtruth_index = find(mask_test(:,user) > 0);
+                groundtruth_index_missing = mask_test(:,user) == 0;
+                num_of_groundtruth = length(groundtruth_userI);
+                num_of_groundtruth_user(user) = num_of_groundtruth;
+
+                if num_of_groundtruth <= eps
                     continue;
                 end
-                for i = 1:length(field)
-                    ranking_result(dim,k).(field{i}) = last.(field{i}) + all_result(k,user).(field{i}) / effect_k(k);
-                    last.(field{i}) = ranking_result(dim,k).(field{i});
-                end
 
+    %             num_of_effect_recommendation = num_of_effect_recommendation + 1;
+                [~, index] = sort(groundtruth_userI,'descend');
+
+                recommendation_userI(groundtruth_index_missing) = 0;
+                index_of_groundtruth_in_ordered_recommendation = get_index(recommendation_userI, groundtruth_userI(index), groundtruth_index(index));
+
+                lastK = 0;
+                for i = 1:length(K_list)
+                    k = K_list(i);
+    %                 if num_of_groundtruth > k 
+    %                     reserved_index = index(1:k);
+    %                 else
+    %                     reserved_index = index;
+    %                 end
+                    if num_of_groundtruth >= k 
+                        reserved_index = index_of_groundtruth_in_ordered_recommendation(1:k);
+                        effect_k(i) = effect_k(i) + 1;
+                    else
+                        break;
+                        reserved_index = index_of_groundtruth_in_ordered_recommendation;
+                    end
+                    thisK = length(reserved_index);
+                    if thisK == lastK
+                        result_userI_k = result_userI_k_last;
+                    else
+
+                        groundtruth = groundtruth_userI(index(1:length(reserved_index)));
+                        result_userI_k = Ranking_evaluate(reserved_index, num_of_groundtruth, groundtruth);
+
+    %                     result_userI_k = evaluation_per_user(... 
+    %                     recommendation_userI, num_of_groundtruth, ...
+    %                     groundtruth_userI(reserved_index), ...
+    %                     groundtruth_index(reserved_index));
+                    end
+                    lastK = thisK;
+                    result_userI_k_last = result_userI_k;
+
+                    all_result(i,user) = result_userI_k;
+
+                end
+            end
+
+            field = fieldnames(all_result);
+
+
+            for k = 1:length(K_list)
+                for i = 1:length(field)
+                    last.(field{i}) = 0;
+                end
+                for user = 1:num_of_user
+                    if ~ (num_of_groundtruth_user(user) >= K_list(k))
+                        continue;
+                    end
+                    for i = 1:length(field)
+                        ranking_result(dim,k).(field{i}) = last.(field{i}) + all_result(k,user).(field{i}) / effect_k(k);
+                        last.(field{i}) = ranking_result(dim,k).(field{i});
+                    end
+
+                end
             end
         end
     end

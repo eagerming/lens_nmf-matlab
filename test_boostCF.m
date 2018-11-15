@@ -133,7 +133,6 @@ for numOfLoop=1:loop
         end
         log_name = dataname;
         [fid, fidpath] = create_new_log(log_name);
-        param.mask = mask;
             
       %% initialize
 
@@ -180,10 +179,11 @@ for numOfLoop=1:loop
         
         ratio = 0.8;
         israndom = true;
-        [train_matrix, test_matrix] = rating_splitter(R, ratio, israndom);
+        [train_matrix, test_matrix, mask_train, mask_test] = rating_splitter(mask, R, ratio, israndom);
         
         R = train_matrix;
         target_R = R;
+        param.mask = train_matrix;
         
         
         %% Set the dictionary
@@ -237,7 +237,7 @@ for numOfLoop=1:loop
       %% Sparse NMF 
       
         mcnt = mcnt + 1; mname{mcnt} = 'SparseNMF'
-        param_snmf.mask = mask;
+        param_snmf.mask = mask_train;
         param_snmf.is_mask = true;
         param_snmf.r = total_topic;
         param_snmf.cf = 'ed';
@@ -302,11 +302,11 @@ for numOfLoop=1:loop
         index_sloma = 1;
       % =========================================================
         
-        learning_rate = [0 0.005 0.01 0.02];
-        dim_list = 1:3;
+        learning_rate = [0 0.005 0.01 0.02 0.05];
+        dim_list = 1:2;
         lambda_list = [0 0.001];
         lambda_social_list = [0 0.001 0.01];
-        sampleSim_list = [1 0.7 0.3];
+        sampleSim_list = [0.7 0.5 0.3 0 -0.5 -1];
         
         
       % =========================================================
@@ -332,7 +332,7 @@ for numOfLoop=1:loop
 
                             param.dim = dim;    
                             param.total = 200;
-                            param.max_iter = 100;
+                            param.max_iter = 200;
                             param.fid = fid;
                             param.exitAtDeltaPercentage = 1e-4;
 
@@ -355,11 +355,11 @@ for numOfLoop=1:loop
                             end
 
                         % =============
-    %                         param.dim_sloma = dim * 10;
-    %                         param.numOfBlock = 100;
-    %                         [~, ~, A_sloma] = SLOMA(target_R, param);
-    %                         A_sloma_list{index_sloma} = A_sloma;
-    %                         index_sloma = index_sloma + 1;
+                            param.dim_sloma = dim * 10;
+                            param.numOfBlock = 100;
+                            [~, ~, A_sloma] = SLOMA(target_R, param);
+                            A_sloma_list{index_sloma} = A_sloma;
+                            index_sloma = index_sloma + 1;
 
                         % ===================================================
 
@@ -465,26 +465,29 @@ for numOfLoop=1:loop
         mcnt = length(V);
         K_list = [1 3 5 10 15 20];
         evaluate_methods = 1:mcnt;
+        isRank = false;
         
 %         profile on;
         for i = evaluate_methods
 
-            [final_result{i}, MAE{i}, RMSE{i}] = evaluation(V{i}, U{i}, test_matrix, K_list);
+            [final_result{i}, MAE{i}, RMSE{i}] = evaluation(V{i}, U{i}, test_matrix, K_list, mask_test, isRank);
             fprintf('Evaluation method[%d] done\n',i);
         end
 %         profile viewer;
         
 %
-        for idx = evaluate_methods
-        %     idx = 1;
-            field = fieldnames(final_result{idx});
-            dim = size(final_result{idx}, 1);
-            K = size(final_result{idx}, 2);
+        if isRank
+            for idx = evaluate_methods
+            %     idx = 1;
+                field = fieldnames(final_result{idx});
+                dim = size(final_result{idx}, 1);
+                K = size(final_result{idx}, 2);
 
-            for k = 1:length(field)
-                for i = 1:K
-                    for j =1:dim
-                        eval(['ranking', '_',field{k},'{', num2str(idx),'}','(', num2str(j) ,',', num2str(i) ,')', ' = ' num2str( final_result{idx}(j,i).(field{k})),';']);
+                for k = 1:length(field)
+                    for i = 1:K
+                        for j =1:dim
+                            eval(['ranking', '_',field{k},'{', num2str(idx),'}','(', num2str(j) ,',', num2str(i) ,')', ' = ' num2str( final_result{idx}(j,i).(field{k})),';']);
+                        end
                     end
                 end
             end

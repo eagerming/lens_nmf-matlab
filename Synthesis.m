@@ -41,7 +41,9 @@ test_matrix = zeros(size(R));
 test_matrix(set0_ind) = R(set0_ind);
 R(set0_ind) = 0;
 
-param.mask = (R ~= 0);
+mask_train = (R ~= 0);
+param.mask = mask_train;
+mask_test = ~mask_train;
 
 %%
 num = 10;
@@ -95,7 +97,9 @@ test_matrix = zeros(size(R));
 test_matrix(set0_ind) = R(set0_ind);
 R(set0_ind) = 0;
 
-param.mask = (R ~= 0);
+mask_train = (R ~= 0);
+param.mask = mask_train;
+mask_test = test_matrix ~= 0;
 
 %  Visualization
 figure
@@ -206,10 +210,10 @@ param.isVisual = true;
 param.social_matrix = social_matrix;
 param.lambda = 0;
 param.lambda_social = 0.1;
-param.learning_rate = 0.01;
+param.learning_rate = 0.05;
 
-param.dim_sloma = 2;
-param.numOfBlock = 6;
+param.dim_sloma = 1;
+param.numOfBlock = 3;
 
 figure
 hold on;
@@ -222,7 +226,7 @@ scatter(cluster3(:,1),cluster3(:,2));
 hold off;
 
 K_list = [1 2];
-[final_result_sloma, MAE_sloma, RMSE_sloma] = evaluation_sloma(A_sloma, test_matrix, K_list);
+[~, MAE_sloma, RMSE_sloma] = evaluation_sloma(A_sloma, test_matrix, K_list, mask_test, false);
 
 
 
@@ -237,9 +241,9 @@ param.sampleThreshold = 1;
 param.similarity_threshold = 0.98;
 param.isVisual = true;
 param.social_matrix = social_matrix;
-param.lambda = 0.0;
-param.lambda_social = 0.1;
-param.learning_rate = 0.1;
+param.lambda = 0.05;
+param.lambda_social = 0;
+param.learning_rate = 0.05;
 
 
 
@@ -274,26 +278,10 @@ evaluate_methods = mcnt:mcnt;
 
 %         profile on;
 for i = evaluate_methods
-    [final_result{i}, MAE{i}, RMSE{i}] = evaluation(V{i}, U{i}, test_matrix, K_list);
+    [~, MAE{i}, RMSE{i}] = evaluation(V{i}, U{i}, test_matrix, K_list, mask_test, false);
     fprintf('Evaluation method[%d] done\n',i);
 end
 %         profile viewer;
-
-%
-for idx = evaluate_methods
-%     idx = 1;
-    field = fieldnames(final_result{idx});
-    dim = size(final_result{idx}, 1);
-    K = size(final_result{idx}, 2);
-
-    for k = 1:length(field)
-        for i = 1:K
-            for j =1:dim
-                eval(['ranking', '_',field{k},'{', num2str(idx),'}','(', num2str(j) ,',', num2str(i) ,')', ' = ' num2str( final_result{idx}(j,i).(field{k})),';']);
-            end
-        end
-    end
-end
 
 
 

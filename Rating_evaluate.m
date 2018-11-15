@@ -1,29 +1,6 @@
-function [MAE, RMSE] = Rating_evaluate(RR,test_matrix)
-    [ii, jj] = find(test_matrix);
+function [MAE, RMSE] = Rating_evaluate(RR, test_matrix, mask_test)
+    num = sum(mask_test(:)>0);
     
-    
-    
-    %% Training
-    % [ii, jj] = find(R);
-    % for k = 1:length(ii)
-    %     [ii(k), jj(k)]
-    %     a = R(ii(k), jj(k))
-    %     b = RR(ii(k), jj(k))
-    %     a - b
-    % end
-
-
-    %% Test
-    RMSE = 0;
-    MAE = 0;
-    for k = 1:length(ii)
-        a = test_matrix(ii(k), jj(k));
-        b = RR(ii(k), jj(k));
-        MAE = MAE + abs(a-b);
-        RMSE = RMSE + (a - b)^2;
-    end
-    MAE = MAE / length(ii);
-    RMSE = sqrt(RMSE/length(ii));
-    
-    %% 
+    RMSE = sqrt( sum(sum((mask_test .* (RR - test_matrix)) .^ 2)) / num);
+    MAE = sum(sum((mask_test .* abs(RR - test_matrix)))) / num;
 end

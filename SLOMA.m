@@ -108,7 +108,7 @@ function [Ws, Hs, A_sloma, iter] = SLOMA(A, params)
 %%    
     % Initialization.
     
-    Original_unexplained = sum(sum(A));
+    Original_unexplained = sum(sum(abs(A)));
 %     disp("===============BoostCF=================")
     fprintf("[SLOMA !!!!!]The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
     fprintf('dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim_sloma, lambda, lambda_social, lambda_item, params.similarity_threshold);
@@ -195,6 +195,12 @@ function [Ws, Hs, A_sloma, iter] = SLOMA(A, params)
 %         [W, H] = sparse_nmf(As, params);
 
         [W, H, iteration] = MF(A_i, dim_sloma, params);
+        A_sloma = A_sloma + W * H;
+        
+        RR = A_sloma(:);
+        times = max(sum(index_vec_list,2), 1e-6);
+        RR = RR ./ times;
+        RR = reshape(RR, size(A,1), size(A,2));
         
         % profile viewer/
         % p = profile('info')
@@ -221,10 +227,12 @@ function [Ws, Hs, A_sloma, iter] = SLOMA(A, params)
 %             [Hs{iter},temp,suc_H,numChol_H,numEq_H] = nnlsm_activeset(Ws{iter}'*Ws{iter},Ws{iter}'*Rs{iter},0,1,bsxfun(@times,Hs{iter}',1./Dcs{iter})');
 
             % update residual matrix
+            
+            
             if params.is_mask
-                Rs{iter+1} = update_res_matrix(Rs{iter}, Ws{iter},Hs{iter}, mask); 
+                Rs{iter+1} = (A - RR) .* mask; 
             else
-                Rs{iter+1} = update_res_matrix(Rs{iter}, Ws{iter},Hs{iter});
+                Rs{iter+1} = (A - RR);
             end
 %             figure
 %             imagesc(Rs{iter+1});
@@ -248,7 +256,7 @@ function [Ws, Hs, A_sloma, iter] = SLOMA(A, params)
             unexplained_last = unexplained;
 %         end
             
-        A_sloma = A_sloma + W * H;
+        
     end
     A_sloma = A_sloma(:);
     times = max(sum(index_vec_list,2), 1e-6);
@@ -295,14 +303,16 @@ function [newA, subsize_row, subsize_col, row_indicate, col_indicate, item_indic
     subsize_row = sum(row_indicate);
     subsize_col = sum(col_indicate);
     
-    if subsize_row <= sampleThreshold
+%     if subsize_row <= sampleThreshold
+    if true
         row_indicate = (1:size(A,1))';
         subsize_row = size(A,1);
     end
-    if subsize_col <= sampleThreshold
-        col_indicate = (1:size(A,2))';
-        subsize_col = size(A,2);
-    end
+    
+%     if subsize_col <= sampleThreshold
+%         col_indicate = (1:size(A,2))';
+%         subsize_col = size(A,2);
+%     end
     
     newA = sparse(size(A,1),size(A,2));
     newA(row_indicate,col_indicate) = A(row_indicate,col_indicate);
