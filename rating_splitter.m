@@ -22,7 +22,7 @@ function [train, test, mask_train, mask_test] = rating_splitter(mask, R, ratio, 
 %     end
     
     mask_test = sparse(ii(index(num_train + 1:end)), jj(index(num_train + 1:end)), 1, size(R,1), size(R,2));
-    test = sparse(ii(index(num_train + 1:end)), jj(index(num_train + 1:end)), ss(index(1:num_train)), size(R,1), size(R,2));
+    test = sparse(ii(index(num_train + 1:end)), jj(index(num_train + 1:end)), ss(index(num_train + 1:end)), size(R,1), size(R,2));
 %     if numel(test) < numel(R)
 %         test(size(R,1), size(R,2)) = 0;
 %     end

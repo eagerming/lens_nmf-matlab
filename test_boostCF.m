@@ -207,10 +207,18 @@ for numOfLoop=1:loop
             end
         end
         
+        
+        %% Ones (2st method)
+        mcnt = 1; mname{mcnt} = 'ones';
+        V{mcnt} = ones(size(target_R,1), 5);
+        U{mcnt} = ones(5, size(target_R,2));
+        
+        
         %% Random (1st method)
-        mcnt = 1; mname{mcnt} = 'Random';
+        mcnt = mcnt + 1; mname{mcnt} = 'Random';
         V{mcnt} = rand(size(target_R,1), 5);
         U{mcnt} = rand(5, size(target_R,2));
+        
         
         %% standard NMF (1st method)
 %         mcnt = mcnt + 1; mname{mcnt} = 'StandardNMF'
