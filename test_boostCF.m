@@ -310,10 +310,10 @@ for numOfLoop=1:loop
         index_sloma = 1;
       % =========================================================
         
-        learning_rate = [-1];
-        dim_list = 1;
-        lambda_list = [0 0.1];
-        lambda_social_list = [0 0.1];
+        learning_rate = [-1 0];
+        dim_list = [1 2];
+        lambda_list = [0.01];
+        lambda_social_list = [0 0.01];
         sampleSim_list = [0.2 0.5];
         
         
@@ -340,7 +340,7 @@ for numOfLoop=1:loop
                             param.local = 3;
                             param.dim = dim;    
                             param.total = 100;
-                            param.max_iter = 200;
+                            param.max_iter = 100;
                             param.fid = fid;
                             param.exitAtDeltaPercentage = 1e-4;
 
@@ -350,7 +350,7 @@ for numOfLoop=1:loop
 
                             param.isWithSample =  true;
                             param.sampleThreshold = 10;
-                            param.topN = 100;
+                            param.topN = 200;
                             param.similarity_threshold = sampleSim_list(ind_sample);
                             param.display = 0;
 

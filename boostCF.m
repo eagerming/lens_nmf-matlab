@@ -229,7 +229,7 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
             param_MF.learning_rate = 0;
         end
         
-        [W, H, iteration] = MF(As, dim, params);
+        [W, H, iteration] = MF(As, dim, param_MF);
         
         % profile viewer/
         % p = profile('info')
@@ -325,14 +325,14 @@ function [newA, subsize_row, subsize_col, row_indicate, col_indicate, item_indic
     subsize_row = sum(row_indicate);
     subsize_col = sum(col_indicate);
     
-    if subsize_row <= sampleThreshold 
+    if subsize_row <= sampleThreshold || subsize_row > topN
 %         row_indicate = (1:size(A,1))';
 %         subsize_row = size(A,1);
         [~, row_indicate] = maxk(A_cossim_row,topN);
         subsize_row = topN;
     end
 
-    if subsize_col <= sampleThreshold
+    if subsize_col <= sampleThreshold || subsize_col > topN
 %         col_indicate = (1:size(A,2))';
 %         subsize_col = size(A,2);
         [~, col_indicate] = maxk(A_cossim_col,topN);
