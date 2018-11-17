@@ -80,6 +80,11 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
     else
         total = params.total;
     end
+    if ~isfield(params, 'topN')
+        topN = 100;
+    else
+        topN = params.topN;
+    end
     
     if ~isfield(params, 'dim') 
         dim = 1;
@@ -188,7 +193,7 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
             [A_cossim_row, A_cossim_col] = get_cosine_similarity(As, row_idx, col_idx);
             
             
-            [As, subsize_row, subsize_col, row_ind, col_ind, item_ind, social_ind] = sample_RowandCol(As, A_cossim_row, A_cossim_col, params.similarity_threshold, sampleThreshold, row_idx, col_idx, has_social_network, has_item_network, social_matrix, item_matrix);
+            [As, subsize_row, subsize_col, row_ind, col_ind, item_ind, social_ind] = sample_RowandCol(As, A_cossim_row, A_cossim_col, params.similarity_threshold, sampleThreshold, row_idx, col_idx, has_social_network, has_item_network, social_matrix, item_matrix,topN);
         else
             subsize_row = size(A,1);
             subsize_col = size(A,2);
@@ -290,7 +295,7 @@ end
 
 %%
 
-function [newA, subsize_row, subsize_col, row_indicate, col_indicate, item_indicate, social_indicate] = sample_RowandCol(A, A_cossim_row, A_cossim_col, threshold, sampleThreshold, row_idx, col_idx, has_social_network, has_item_network, social_matrix, item_matrix)
+function [newA, subsize_row, subsize_col, row_indicate, col_indicate, item_indicate, social_indicate] = sample_RowandCol(A, A_cossim_row, A_cossim_col, threshold, sampleThreshold, row_idx, col_idx, has_social_network, has_item_network, social_matrix, item_matrix,topN)
     row_indicate = A_cossim_row >= threshold;
     col_indicate = A_cossim_col >= threshold;
     item_indicate = [];
@@ -308,15 +313,18 @@ function [newA, subsize_row, subsize_col, row_indicate, col_indicate, item_indic
     subsize_row = sum(row_indicate);
     subsize_col = sum(col_indicate);
     
-    if subsize_row <= sampleThreshold
-%     if true
-        row_indicate = (1:size(A,1))';
-        subsize_row = size(A,1);
+    if subsize_row <= sampleThreshold 
+%         row_indicate = (1:size(A,1))';
+%         subsize_row = size(A,1);
+        [~, row_indicate] = maxk(A_cossim_row,topN);
+        subsize_row = topN;
     end
-%     if subsize_col <= sampleThreshold
-    if true
-        col_indicate = (1:size(A,2))';
-        subsize_col = size(A,2);
+
+    if subsize_col <= sampleThreshold
+%         col_indicate = (1:size(A,2))';
+%         subsize_col = size(A,2);
+        [~, col_indicate] = maxk(A_cossim_col,topN);
+        subsize_col = topN;
     end
     
     newA = sparse(size(A,1),size(A,2));

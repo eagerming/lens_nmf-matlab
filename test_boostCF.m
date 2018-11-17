@@ -350,6 +350,7 @@ for numOfLoop=1:loop
 
                             param.isWithSample =  true;
                             param.sampleThreshold = 10;
+                            param.topN = 100;
                             param.similarity_threshold = sampleSim_list(ind_sample);
                             param.display = 0;
 
