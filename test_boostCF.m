@@ -310,11 +310,11 @@ for numOfLoop=1:loop
         index_sloma = 1;
       % =========================================================
         
-        learning_rate = [0 0.005 0.01 0.02 0.05];
-        dim_list = 1:2;
-        lambda_list = [0 0.001];
-        lambda_social_list = [0 0.001 0.01];
-        sampleSim_list = [0.7 0.5 0.3 0 -0.5 -1];
+        learning_rate = [0];
+        dim_list = 1;
+        lambda_list = [0 0.1];
+        lambda_social_list = [0 0.1];
+        sampleSim_list = [0.2 0.5];
         
         
       % =========================================================
@@ -339,7 +339,7 @@ for numOfLoop=1:loop
 
 
                             param.dim = dim;    
-                            param.total = 200;
+                            param.total = 100;
                             param.max_iter = 200;
                             param.fid = fid;
                             param.exitAtDeltaPercentage = 1e-4;
@@ -349,7 +349,7 @@ for numOfLoop=1:loop
                             param.lambda_item = lambda_item;
 
                             param.isWithSample =  true;
-                            param.sampleThreshold = 2;
+                            param.sampleThreshold = 10;
                             param.similarity_threshold = sampleSim_list(ind_sample);
                             param.display = 0;
 
@@ -365,13 +365,14 @@ for numOfLoop=1:loop
                         % =============
                             param.dim_sloma = dim * 10;
                             param.numOfBlock = 100;
-                            [~, ~, A_sloma] = SLOMA(target_R, param);
+                            A_sloma = zeros(size(target_R));
+%                             [~, ~, A_sloma] = SLOMA(target_R, param);
                             A_sloma_list{index_sloma} = A_sloma;
                             index_sloma = index_sloma + 1;
 
                         % ===================================================
 
-                            mname{mcnt} = sprintf('BoostCF, learningRate = %f, dim=%d, l=%.2f, ls=%.2f, li=%.2f, samleSim=%.2f', param.learning_rate, dim, lambda, lambda_social, lambda_item, sampleSim_list(ind_sample));
+                            mname{mcnt} = sprintf('BoostCF, learningRate = %f, dim=%d, l=%f, ls=%f, li=%f, samleSim=%f', param.learning_rate, dim, lambda, lambda_social, lambda_item, sampleSim_list(ind_sample));
                             fprintf('==============BoostCF #[%d]===============\n',mcnt);
                             if exist('fid', 'var')
                                 fprintf(fid, '==============BoostCF #[%d]===============\n',mcnt);
@@ -482,6 +483,13 @@ for numOfLoop=1:loop
             fprintf('Evaluation method[%d] done\n',i);
         end
 %         profile viewer;
+
+        for i = 1:length(A_sloma_list)
+            [~, MAE_sloma(i,1), RMSE_sloma(i,1)] = evaluation_sloma(A_sloma_list{i}, test_matrix, K_list, mask_test, false); 
+        end
+        for i = 1:length(RMSE)
+            RMSE_min(i,1) = min(RMSE{i}); 
+        end
         
 %
         if isRank
@@ -525,12 +533,15 @@ for numOfLoop=1:loop
         
         
         %% Save Data
-        
-        saveLog(fid, final_result, K_list, mname);
+        mname = mname';
+%         saveLog(fid, final_result, K_list, mname);
         fclose(fid);
         
         saveName = saveResult(fidpath);
         save(saveName);
+        
+       
+        saveSum(saveName, mname, RMSE_min, RMSE_sloma);
         
 
 	end        

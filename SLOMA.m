@@ -111,11 +111,11 @@ function [Ws, Hs, A_sloma, iter] = SLOMA(A, params)
     Original_unexplained = sum(sum(abs(A)));
 %     disp("===============BoostCF=================")
     fprintf("[SLOMA !!!!!]The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
-    fprintf('dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim_sloma, lambda, lambda_social, lambda_item, params.similarity_threshold);
+    fprintf('dim=[%d], lambda=[%f], lambda_social=[%f], lambda_item=[%f], sim_threshold=[%f]\n', dim_sloma, lambda, lambda_social, lambda_item, params.similarity_threshold);
     fprintf("--------------------[SLOMA !!!!!]------------------------\n");
     if isfield(params,'fid')
         fprintf(params.fid, "The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
-        fprintf(params.fid, 'dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', dim_sloma, lambda, lambda_social, lambda_item, params.similarity_threshold);
+        fprintf(params.fid, 'dim=[%d], lambda=[%f], lambda_social=[%f], lambda_item=[%f], sim_threshold=[%f]\n', dim_sloma, lambda, lambda_social, lambda_item, params.similarity_threshold);
         fprintf(params.fid, "--------------------[SLOMA !!!!!]-----------------------\n");
     end
     unexplained_last = Original_unexplained;
@@ -265,7 +265,7 @@ function [Ws, Hs, A_sloma, iter] = SLOMA(A, params)
     
     if isfield(params,'fid')
         fprintf(params.fid, '\n\n');
-%         fprintf(params.fid, 'dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f]\n', dim, lambda, lambda_social, lambda_item);
+%         fprintf(params.fid, 'dim=[%d], lambda=[%f], lambda_social=[%f], lambda_item=[%f]\n', dim, lambda, lambda_social, lambda_item);
 %         fprintf(params.fid, "Terminate at Round [%d]: Unexplained part: %f, Percentage %f%%, delta%%=%f\n", ...
 %                 iter, full(unexplained), full(percentage) * 100, full((unexplained_last - unexplained)/Original_unexplained));
     end

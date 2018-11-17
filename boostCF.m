@@ -157,11 +157,11 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
     Original_unexplained = sum(sum(abs(A)));
 %     disp("===============BoostCF=================")
     fprintf("The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
-    fprintf('learningRate=[%f], dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', params.learning_rate, dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
+    fprintf('learningRate=[%f], dim=[%d], lambda=[%f], lambda_social=[%f], lambda_item=[%f], sim_threshold=[%f]\n', params.learning_rate, dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
     fprintf("--------------------------------------------\n");
     if isfield(params,'fid')
         fprintf(params.fid, "The initial unexplained part (sum of rating matrix) is %f\n", full(Original_unexplained));
-        fprintf(params.fid, 'learningRate=[%f], dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f], sim_threshold=[%f]\n', params.learning_rate, dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
+        fprintf(params.fid, 'learningRate=[%f], dim=[%d], lambda=[%f], lambda_social=[%f], lambda_item=[%f], sim_threshold=[%f]\n', params.learning_rate, dim, lambda, lambda_social, lambda_item, params.similarity_threshold);
         fprintf(params.fid, "-------------------------------------------\n");
     end
     unexplained_last = Original_unexplained;
@@ -270,7 +270,7 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
     end
     if isfield(params,'fid')
         fprintf(params.fid, '\n\n');
-%         fprintf(params.fid, 'dim=[%d], lambda=[%.2f], lambda_social=[%.2f], lambda_item=[%.2f]\n', dim, lambda, lambda_social, lambda_item);
+%         fprintf(params.fid, 'dim=[%d], lambda=[%f], lambda_social=[%f], lambda_item=[%f]\n', dim, lambda, lambda_social, lambda_item);
 %         fprintf(params.fid, "Terminate at Round [%d]: Unexplained part: %f, Percentage %f%%, delta%%=%f\n", ...
 %                 iter, full(unexplained), full(percentage) * 100, full((unexplained_last - unexplained)/Original_unexplained));
     end
@@ -308,14 +308,16 @@ function [newA, subsize_row, subsize_col, row_indicate, col_indicate, item_indic
     subsize_row = sum(row_indicate);
     subsize_col = sum(col_indicate);
     
-%     if subsize_row <= sampleThreshold
-%         row_indicate = (1:size(A,1))';
-%         subsize_row = size(A,1);
-%     end
+    if subsize_row <= sampleThreshold
+%     if true
+        row_indicate = (1:size(A,1))';
+        subsize_row = size(A,1);
+    end
 %     if subsize_col <= sampleThreshold
-%         col_indicate = (1:size(A,2))';
-%         subsize_col = size(A,2);
-%     end
+    if true
+        col_indicate = (1:size(A,2))';
+        subsize_col = size(A,2);
+    end
     
     newA = sparse(size(A,1),size(A,2));
     newA(row_indicate,col_indicate) = A(row_indicate,col_indicate);
