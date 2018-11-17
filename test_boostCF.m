@@ -310,7 +310,7 @@ for numOfLoop=1:loop
         index_sloma = 1;
       % =========================================================
         
-        learning_rate = [0];
+        learning_rate = [-1];
         dim_list = 1;
         lambda_list = [0 0.1];
         lambda_social_list = [0 0.1];
@@ -337,7 +337,7 @@ for numOfLoop=1:loop
 
                             mcnt = mcnt + 1;
 
-
+                            param.local = 3;
                             param.dim = dim;    
                             param.total = 100;
                             param.max_iter = 200;

@@ -85,6 +85,11 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
     else
         topN = params.topN;
     end
+    if ~isfield(params, 'local')
+        local = 3;
+    else
+        local = params.local;
+    end
     
     if ~isfield(params, 'dim') 
         dim = 1;
@@ -177,7 +182,7 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
         rng(iter);
         As = Rs{iter};
         
-        if isWithSample
+        if isWithSample && iter >= local
             try
                 row_idx = datasample(1:size(As,1), 1, 'Replace', false, 'Weights', full(sum(abs(As),2)));
                 col_idx = datasample(1:size(As,2), 1, 'Replace', false, 'Weights', full(sum(abs(As),1)));
@@ -217,6 +222,13 @@ function [Ws, Hs, iter,As] = boostCF(A, params)
 %         params.cf = 'ed';
 %         [W, H] = sparse_nmf(As, params);
 
+        if iter >= local
+            param_MF = params;
+        else
+            param_MF = params;
+            param_MF.learning_rate = 0;
+        end
+        
         [W, H, iteration] = MF(As, dim, params);
         
         % profile viewer/
